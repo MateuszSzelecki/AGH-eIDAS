@@ -4,6 +4,8 @@ This repository contains the full implementation of the ZeroAge anonymous age ve
 
 The project is organized as a monorepo to simplify development, integration, and deployment.
 
+---
+
 ## Components Oveview
 
 ### Issuer API
