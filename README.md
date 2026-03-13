@@ -6,8 +6,6 @@ The project is organized as a monorepo to simplify development, integration, and
 
 ---
 
-## Components Oveview
-
 ### Issuer API
 
 The Issuer Service is responsible for issuing signed credentials based on student identity data.
@@ -24,6 +22,8 @@ Technology stack:
 - FastAPI
 - PostgreSQL / SQLite
 
+---
+
 ### Verification API
 
 The Verification Service handles verification of one-time codes used on websites.
@@ -38,6 +38,8 @@ Technology stack:
 - Python
 - FastAPI
 - Redis
+
+---
 
 ### Wallet (PWA)
 
@@ -56,6 +58,8 @@ Technology stack:
 - WebAuthn
 - IndexedDB
 
+---
+
 ### QR Verifier
 
 The Store Verifier App is used by physical merchants to verify age using a QR code.
@@ -70,6 +74,8 @@ Technology stack:
 - browser camera APIs
 - snarkjs verification
 
+---
+
 ### ZK Module
 
 The ZK module contains the Zero-Knowledge Proof circuits and artifacts.
@@ -80,6 +86,8 @@ Contents:
 - proving keys
 - verification keys
 - trusted setup scripts
+
+---
 
 ### Documentation
 
