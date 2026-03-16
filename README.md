@@ -41,22 +41,20 @@ Technology stack:
 
 ---
 
-### Wallet (PWA)
+### Wallet
 
 The Wallet App is used by the user to store credentials and generate Zero-Knowledge Proofs.
 
 Capabilities:
 - secure credential storage
-- biometric authentication (WebAuthn)
-- ZKP proof generation (WASM)
+- biometric authentication
+- ZKP proof generation
 - QR code generation
 - one-time verification codes
 
 Technology stack:
-- React
-- Vite
-- WebAuthn
-- IndexedDB
+- React Native
+- Expo
 
 ---
 
