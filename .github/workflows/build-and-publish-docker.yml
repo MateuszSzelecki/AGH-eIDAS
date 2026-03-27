@@ -1,0 +1,28 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t agh-eidas-api:latest ./api
+
+      - name: Save Docker image as tar
+        run: docker save agh-eidas-api:latest -o agh-eidas-api.tar
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agh-eidas-api-docker-image
+          path: agh-eidas-api.tar
