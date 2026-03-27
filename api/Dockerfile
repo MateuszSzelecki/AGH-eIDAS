@@ -2,7 +2,7 @@ FROM node:alpine
 
 COPY package.json .
 
-RUN npm install --verbose
+RUN npm install
 
 COPY . .
 
