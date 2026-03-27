@@ -1,8 +1,8 @@
 FROM node:alpine
 
-COPY package.json .
+COPY package.json pnpm-lock.yaml .
 
-RUN npm install
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
 COPY . .
 
