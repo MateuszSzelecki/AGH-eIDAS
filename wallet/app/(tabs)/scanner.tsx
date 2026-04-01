@@ -26,6 +26,7 @@ const [permission, requestPermission] = useCameraPermissions();
   const handleScan = ({ data }) => {
     setScanned(true);
     console.log("QR code:", data);
+    //TO DO: Pass data to ZKP function
   };
 
   return (

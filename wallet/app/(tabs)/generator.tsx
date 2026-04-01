@@ -17,12 +17,6 @@ const router = useRouter();
           <ThemedText>Generate QR Code</ThemedText>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.secondaryButton}
-    onPress={() => router.navigate('../generate/gen-barcode')}
-                >
-          <ThemedText>Generate Barcode</ThemedText>
-        </TouchableOpacity>
-
         <TouchableOpacity style={styles.secondaryButton}>
           <ThemedText
 
