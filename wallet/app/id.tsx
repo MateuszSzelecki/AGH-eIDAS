@@ -6,7 +6,7 @@ import { ThemedView } from '@/components/themed-view';
 
 export default function Barcode() {
   return (
-      
+
 <ThemedView style={styles.container}>
 <ThemedText>id</ThemedText>
     </ThemedView>

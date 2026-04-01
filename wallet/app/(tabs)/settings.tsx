@@ -3,27 +3,35 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Home() {
 const router = useRouter();
+const { logout } = useAuth();
   return (
 <ThemedView style={styles.container}>
       
       <View style={styles.buttonStack}>
-        <TouchableOpacity style={styles.secondaryButton}
-
-                >
+        <TouchableOpacity style={styles.secondaryButton}>
           <ThemedText>Setting #1</ThemedText>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.secondaryButton}
-                >
+        <TouchableOpacity style={styles.secondaryButton}>
           <ThemedText>Setting #2</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryButton}>
 
           <ThemedText>Setting #3</ThemedText>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity style={styles.logoutButton}
+
+    onPress={() => logout()}
+        >
+
+          <ThemedText>Logout</ThemedText>
         </TouchableOpacity>
       </View>
 
@@ -50,6 +58,15 @@ const styles = StyleSheet.create({
   secondaryButton: {
     borderWidth: 1,
     borderColor: '#ccc',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+
+  logoutButton: {
+    borderWidth: 1,
+    borderColor: '#f00',
+    color: '#f00',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
