@@ -1,8 +1,7 @@
-import { Redirect } from 'expo-router';
-import { useAuth } from '../../context/AuthContext';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-
+import { Redirect } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 export default function Index() {
   const { user, loading, biometricsCheck } = useAuth();
@@ -12,20 +11,17 @@ export default function Index() {
     const authenticate = async (): Promise<void> => {
       if (!user) {
         return;
-      }
-      else{
-
-      const result = await biometricsCheck('Unlock App');
-      setAuthenticated(result);
-      return;
+      } else {
+        const result = await biometricsCheck("Unlock App");
+        setAuthenticated(result);
+        return;
       }
     };
 
     authenticate();
   }, [user]);
 
-
-    console.log(user)
+  console.log(user);
 
   if (loading) {
     return (
@@ -36,10 +32,8 @@ export default function Index() {
   }
 
   if (!user) {
-
     return <Redirect href="/login" />;
   }
-
 
   if (!authenticated) {
     return (
@@ -48,7 +42,6 @@ export default function Index() {
       </View>
     );
   }
-
 
   return <Redirect href="/home" />;
 }

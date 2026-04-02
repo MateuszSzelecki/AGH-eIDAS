@@ -1,30 +1,27 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
 
 export default function Home() {
-const router = useRouter();
+  const router = useRouter();
   return (
-<ThemedView style={styles.container}>
-      
+    <ThemedView style={styles.container}>
       <View style={styles.buttonStack}>
-        <TouchableOpacity style={styles.secondaryButton}
-
-    onPress={() => router.navigate('../generate/gen-qr')}
-                >
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() => router.navigate("../generate/gen-qr")}
+        >
           <ThemedText>Generate QR Code</ThemedText>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryButton}>
-          <ThemedText
-
-    onPress={() => router.navigate('../generate/gen-code')}
-                    >Generate Numeric Code</ThemedText>
+          <ThemedText onPress={() => router.navigate("../generate/gen-code")}>
+            Generate Numeric Code
+          </ThemedText>
         </TouchableOpacity>
       </View>
-
     </ThemedView>
   );
 }
@@ -37,19 +34,19 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 18,
   },
   buttonStack: {
-    width: '100%',
+    width: "100%",
     gap: 15,
   },
   secondaryButton: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
-  }
+    alignItems: "center",
+  },
 });
