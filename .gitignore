@@ -8,3 +8,15 @@ devenv.local.yaml
 
 # pre-commit
 .pre-commit-config.yaml
+
+# ZK ceremony files
+zk/artifacts/circuit_0*.zkey
+zk/artifacts/challenge_*
+zk/artifacts/response_*
+zk/artifacts/*.ptau
+zk/artifacts/witness.wtns
+zk/artifacts/*.r1cs
+zk/artifacts/*.sym
+zk/artifacts/*.r1cs.json
+zk/artifacts/*_cpp/
+zk/artifacts/*_js/
