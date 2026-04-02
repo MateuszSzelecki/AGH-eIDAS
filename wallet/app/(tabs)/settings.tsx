@@ -1,16 +1,15 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
 
-import { useRouter } from 'expo-router';
-import { useAuth } from '../../context/AuthContext';
+import { useRouter } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
-const router = useRouter();
-const { logout } = useAuth();
+  const router = useRouter();
+  const { logout } = useAuth();
   return (
-<ThemedView style={styles.container}>
-      
+    <ThemedView style={styles.container}>
       <View style={styles.buttonStack}>
         <TouchableOpacity style={styles.secondaryButton}>
           <ThemedText>Setting #1</ThemedText>
@@ -21,20 +20,13 @@ const { logout } = useAuth();
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryButton}>
-
           <ThemedText>Setting #3</ThemedText>
         </TouchableOpacity>
 
-
-        <TouchableOpacity style={styles.logoutButton}
-
-    onPress={() => logout()}
-        >
-
+        <TouchableOpacity style={styles.logoutButton} onPress={() => logout()}>
           <ThemedText>Logout</ThemedText>
         </TouchableOpacity>
       </View>
-
     </ThemedView>
   );
 }
@@ -47,28 +39,28 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 18,
   },
   buttonStack: {
-    width: '100%',
+    width: "100%",
     gap: 15,
   },
   secondaryButton: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   logoutButton: {
     borderWidth: 1,
-    borderColor: '#f00',
-    color: '#f00',
+    borderColor: "#f00",
+    color: "#f00",
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
-  }
+    alignItems: "center",
+  },
 });
