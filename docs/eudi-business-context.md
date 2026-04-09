@@ -15,6 +15,8 @@ Currently, to buy age-restricted goods (like alcohol) in a physical store or to 
 **Our Solution (The ZeroAge System):**
 Our system completely reverses this dynamic. By utilizing Zero-Knowledge Proofs (ZKP) within our mobile wallet, users can prove the *fact* that they are over 18 years old without sharing any underlying data. The verifier only receives a cryptographic "YES" or "NO" confirmation. This protects user privacy while allowing businesses to fully comply with age-restriction laws.
 
+![Comparison: The Old Way vs The ZeroAge Way](images/before-and-after.png)
+
 ## 3. Key Concepts (Explained Simply)
 
 Our project implements the foundational principles of the eIDAS 2.0 framework:
@@ -25,6 +27,8 @@ Our project implements the foundational principles of the eIDAS 2.0 framework:
 ## 4. User Stories (Core Use Cases)
 
 To demonstrate the practical application of the ZeroAge system within the EUDI framework, we have defined the following core User Stories from the perspective of the main actors in the ecosystem:
+
+![How the ZeroAge process works](images/how-it-works.png)
 
 **A. The User (e.g., Citizen / Student)**
 *   **As a user**, I want to securely store an age credential in my mobile wallet, **so that** I do not have to carry my physical ID card with me to prove my age.
