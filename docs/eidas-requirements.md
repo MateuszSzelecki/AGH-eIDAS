@@ -17,7 +17,7 @@ The EUDI ARF Annex 2 defines strict [High-Level Requirements (HLR)](https://gith
 ### A. Presentation & Data Formats
 *   **PID_02 & PID_03:** A PID Provider (e.g., a national government) SHALL issue the PID in both formats concurrently: ISO/IEC 18013-5 (mDoc) and SD-JWT VC. If a PID credential includes a portrait, it MUST be a pure JPEG image without any additional binary headers, adhering strictly to the ISO/IEC 19794-5 quality standards for a "Full Frontal Image".
 *   **OIA_01 & OIA_04:** Wallets must support OpenID4VP for remote presentation flows and ISO/IEC 18013-5 (mDoc) for proximity (offline) presentations.
-*   **CPA_01 & CPA_02 (Combined Presentation of Attributes):** The Wallet must support combining attributes from multiple distinct attestations (e.g., pulling your Date of Birth from a PID and your Student Status from a university diploma) into a single, unified presentation to the Relying Party.
+*   **Topic 18 & RPI_09 (Combined Presentation of Attributes):** Although the formal HLRs for Topic 18 are still being drafted, the framework requires Wallets and Relying Parties to support combining attributes from multiple distinct attestations (e.g., pulling your Date of Birth from a PID and your Student Status from a university diploma) into a single, unified presentation. Intermediaries and Relying Parties must cryptographically verify these combined presentations.
 *   **OIA_08 & OIA_08a-e:** Integration with the W3C Digital Credentials API is strongly recommended for remote flows, provided it respects privacy (e.g., hiding exact attribute values from the browser/OS).
 
 ### B. Hardware & Cryptographic Security
