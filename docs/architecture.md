@@ -68,6 +68,9 @@ The ZK module produces three artifacts during the trusted setup ceremony:
 
 ## 4. Component Architecture
 
+### 4.1 Wallet App (React Native / Expo)
+The Wallet is the user-facing mobile application. It is the sole entity that holds private credentials and generates ZK proofs. The architecture follows a layered design.
+
 ## 5. Credential Lifecycle
 
 ## 6. Security Architecture
