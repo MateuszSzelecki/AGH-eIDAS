@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Render } from '@nestjs/common';
 import { VerifierService } from './verifier.service';
 
 @Controller('verifier')
@@ -8,5 +8,11 @@ export class VerifierController {
   @Get()
   getHello(): string {
     return this.verifierService.getHello();
+  }
+
+  @Get('index')
+  @Render('index')
+  root() {
+    return { message: 'Hello world!' };
   }
 }
