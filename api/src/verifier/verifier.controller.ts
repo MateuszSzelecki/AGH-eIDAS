@@ -1,4 +1,5 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Query } from '@nestjs/common';
+import * as qrcode from 'qrcode';
 import { VerifierService } from './verifier.service';
 
 @Controller('verifier')
@@ -14,5 +15,13 @@ export class VerifierController {
   @Render('index')
   root() {
     return { message: 'Hello world!' };
+  }
+
+  @Get('qr')
+  @Render('qr')
+  async generateQrCode() {
+    const hardcodedData = 'Hello, QR Code!'; // Hardcoded data
+    const qrCodeDataUrl = await qrcode.toDataURL(hardcodedData);
+    return { qrCodeDataUrl };
   }
 }
