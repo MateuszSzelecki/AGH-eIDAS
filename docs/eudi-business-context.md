@@ -15,7 +15,7 @@ Currently, to buy age-restricted goods (like alcohol) in a physical store or to 
 **Our Solution (The ZeroAge System):**
 Our system completely reverses this dynamic. By utilizing Zero-Knowledge Proofs (ZKP) within our mobile wallet, users can prove the *fact* that they are over 18 years old without sharing any underlying data. The verifier only receives a cryptographic "YES" or "NO" confirmation. This protects user privacy while allowing businesses to fully comply with age-restriction laws.
 
-<img src="images/before-and-after.png" width="100%" alt="Comparison: The Old Way vs The ZeroAge Way">
+<img src="images/before-and-after-u.png" width="100%" alt="Comparison: The Old Way vs The ZeroAge Way">
 
 ## 3. Key Concepts (Explained Simply)
 
