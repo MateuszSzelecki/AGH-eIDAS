@@ -21,21 +21,22 @@ Our system completely reverses this dynamic. By utilizing Zero-Knowledge Proofs 
 
 Our project implements the foundational principles of the eIDAS 2.0 framework:
 
-*   **Selective Disclosure:** This is the most crucial innovation of the EUDI Wallet. It means that the user has full control and shares *only* the data that is absolutely necessary for a given transaction. In the ZeroAge system, instead of sharing an exact "Date of Birth," the wallet selectively discloses only a boolean attribute: `age > 18`.
+*   **Selective Disclosure:** This is the most crucial innovation of the EUDI Wallet. It means that the user has full control and shares *only* the data that is absolutely necessary for a given transaction. In the ZeroAge system, instead of sharing an exact "Date of Birth," the wallet selectively discloses only a boolean attribute: `age > 18` (and optionally student status).
 *   **Anti-tracking & Privacy by Design:** Verifiers (shops or websites) do not receive any unique, permanent identifiers. Thanks to the use of temporary, one-time QR codes and cryptographic tokens, it is impossible for businesses to track the user's activity, link different transactions together, or build behavioral profiles.
 
 ## 4. User Stories (Core Use Cases)
 
 To demonstrate the practical application of the ZeroAge system within the EUDI framework, we have defined the following core User Stories from the perspective of the main actors in the ecosystem:
 
-![How the ZeroAge process works](images/how-it-works.png)
+![ZeroAge: How It Works](images/how-it-works-updated.png)
+
 
 **A. The User (e.g., Citizen / Student)**
 *   **As a user**, I want to securely store an age credential in my mobile wallet, **so that** I do not have to carry my physical ID card with me to prove my age.
-*   **As a user**, I want to generate a one-time QR code or token to prove I am over 18, **so that** I can protect my exact date of birth, name, and address from being exposed to strangers in a store or to online platforms.
+*   **As a user**, I want to scan a store terminal's QR code to provide a zero-knowledge proof that I am over 18, **so that** I can protect my exact date of birth, name, and address from being exposed to strangers in a store or to online platforms.
 
 **B. The Offline Verifier (e.g., Shop Cashier / Bouncer)**
-*   **As a retail worker**, I want to quickly scan a customer's QR code using a dedicated app and see a simple "OK/FAIL" (or "18+") visual confirmation, **so that** I can efficiently and legally sell age-restricted goods (like alcohol or energy drinks) without having to manually calculate the customer's age from their date of birth.
+*   **As a retail worker**, I want to quickly display a challenge QR code on my terminal for the customer to scan and see a simple "OK/FAIL" (or "18+") visual confirmation, **so that** I can efficiently and legally sell age-restricted goods (like alcohol or energy drinks) without having to manually calculate the customer's age from their date of birth.
 
 **C. The Online Verifier (e.g., VOD Platform / Online Gambling)**
 *   **As an online service provider**, I want to verify a user's age anonymously via a cryptographic zero-knowledge proof, **so that** I can strictly comply with legal age-restriction mandates without bearing the security risks and GDPR compliance costs of storing sensitive ID scans or documents on my servers.
@@ -43,12 +44,14 @@ To demonstrate the practical application of the ZeroAge system within the EUDI f
 **D. The Issuer (e.g., University / Government Agency)**
 *   **As a trusted Issuer**, I want to securely issue digitally signed age credentials to eligible individuals, **so that** they can utilize these credentials seamlessly across the wider EUDI ecosystem.
 
+![ZeroAge: Detailed User Journey Flowchart](images/user-flow-diagram.drawio.png)
+
 ## 5. Business Benefits (Value Proposition for Verifiers)
 
 Why would businesses and online platforms want to integrate with the ZeroAge ecosystem?
 
 *   **Massive Reduction in GDPR & Data Breach Risks:** Storing physical ID scans or exact birth dates creates a massive liability for companies in case of a hacker attack. By using our Zero-Knowledge approach, platforms only store a cryptographic proof of age. If their servers are breached, hackers get nothing of value (no names, no document numbers).
-*   **Operational Efficiency (Faster Checkout):** In physical stores, checking IDs manually is slow and prone to human error (cashiers miscalculating the age from the birth year). Scanning a QR code takes less than a second and gives a definitive, legally binding result.
+*   **Operational Efficiency (Faster Checkout):** In physical stores, checking IDs manually is slow and prone to human error (cashiers miscalculating the age from the birth year). Scanning the terminal's QR code by the customer takes less than a second and gives a definitive, legally binding result.
 *   **Fraud Prevention:** Cryptographically signed credentials stored in a secure hardware enclave (Wallet) are virtually impossible to forge, unlike physical ID cards which can be faked by minors.
 
 ## 6. Real-World Demand & Legal Deadlines
