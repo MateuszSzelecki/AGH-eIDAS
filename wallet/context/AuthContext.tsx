@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Redirect, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 
-import * as storageService from "@/services/storageService"
+import * as storageService from "@/services/storageService";
 
 import * as LocalAuthentication from "expo-local-authentication";
 type User = {
@@ -16,6 +16,7 @@ type AuthContextType = {
   login: (token: string) => Promise<void>;
   logout: () => Promise<void>;
   biometricsCheck: (message: string) => Promise<boolean>;
+  getUserData: (message: string) => Promise<storageService.UserId | null>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -41,12 +42,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // TO DO: Register user
     login("fake-token");
     return;
-  }
+  };
 
   const login = async (token: string): Promise<void> => {
     // TO DO: Login user
     await SecureStore.setItemAsync("token", token);
-    await storageService.storeUserData("placeholder");
+    let userData: storageService.UserId = storageService.createUserId({
+      firstName: "test",
+      lastName: "test",
+      dateBirth: 1,
+      dateIssue: Date.now(),
+    });
+    await storageService.storeUserData(userData);
     setUser({ token });
   };
 
@@ -71,17 +78,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       promptMessage: message,
     });
 
-    return result;
+    return result.success;
   };
 
-  const getUserData = async (message: string): Promise<string | null> => {
+  const getUserData = async (
+    message: string,
+  ): Promise<storageService.UserId | null> => {
     if (!user) {
-      return;
+      return null;
     }
     if (await biometricsCheck(message)) {
       return storageService.loadUserData();
     }
-    return;
+    return null;
   };
 
   const inAuth = segments[0] === "(auth)";

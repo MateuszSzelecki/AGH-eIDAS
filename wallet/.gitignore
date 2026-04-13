@@ -41,3 +41,8 @@ app-example
 # generated native folders
 /ios
 /android
+
+# untill generate proof module is not ready not pushing it
+/modules
+
+# Without this module app won't generate proofs (and crash)
