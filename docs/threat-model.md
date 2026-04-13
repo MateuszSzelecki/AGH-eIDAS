@@ -33,18 +33,18 @@ This document outlines the security mechanisms implemented in the ZeroAge system
 This section details the specific assumptions made for the current PoC and identifies architectural areas that will be addressed in future iterations to further enhance privacy and usability.
 
 ### 5.1 Trust in Verifier Terminals
-**Assumption:** In the current PoC scope, we assume that the merchant terminals (e.g., cash registers displaying the QR code) are legitimate and trustworthy.
-**Future Work:** To achieve full mutual trust, future iterations should implement Verifier Attestation. This would allow the Wallet to cryptographically verify the legitimacy of the terminal before computing or sharing any proofs, protecting users from rogue or fake terminals.
+- **Assumption:** In the current PoC scope, we assume that the merchant terminals (e.g., cash registers displaying the QR code) are legitimate and trustworthy.
+- **Future Work:** To achieve full mutual trust, future iterations should implement Verifier Attestation. This would allow the Wallet to cryptographically verify the legitimacy of the terminal before computing or sharing any proofs, protecting users from rogue or fake terminals.
 
 ### 5.2 Location Privacy and Aggregated Verifier IDs
-**Design Choice:** The system currently relies on unique terminal IDs (identifying a specific cash register) to facilitate the verification flow. The Wallet keeps this verification history strictly local.
-**Potential Risk:** Using highly granular IDs could theoretically allow for precise location and behavioral tracking if the data were ever exposed.
-**Future Mitigation:** We consider transitioning to Aggregated Verifier IDs. Instead of identifying a single register, a shared ID would be used for a group of registers or an entire store branch (e.g., "Store Branch #123"). This maintains the necessary context for the verification while significantly increasing user location privacy.
+- **Design Choice:** The system currently relies on unique terminal IDs (identifying a specific cash register) to facilitate the verification flow. The Wallet keeps this verification history strictly local.
+- **Potential Risk:** Using highly granular IDs could theoretically allow for precise location and behavioral tracking if the data were ever exposed.
+- **Future Mitigation:** We consider transitioning to Aggregated Verifier IDs. Instead of identifying a single register, a shared ID would be used for a group of registers or an entire store branch (e.g., "Store Branch #123"). This maintains the necessary context for the verification while significantly increasing user location privacy.
 
 ### 5.3 Connectivity and IP Address Leakage
-**Potential Problem:** The current verification flow requires the Wallet to scan a QR code and submit the proof via HTTPS to a backend server. This approach relies on an active internet connection (which may fail in underground stores) and exposes the user's IP address to the Verifier's server.
-**Future Work:** To address connectivity issues and prevent IP tracking, future versions should introduce offline-capable local transport layers, specifically NFC. This would allow the smartphone to transmit the proof directly to the local terminal without requiring internet access.
+- **Potential Problem:** The current verification flow requires the Wallet to scan a QR code and submit the proof via HTTPS to a backend server. This approach relies on an active internet connection (which may fail in underground stores) and exposes the user's IP address to the Verifier's server.
+- **Future Work:** To address connectivity issues and prevent IP tracking, future versions should introduce offline-capable local transport layers, specifically NFC. This would allow the smartphone to transmit the proof directly to the local terminal without requiring internet access.
 
 ### 5.4 Device Theft and Credential Revocation
-**Assumption:** An age verification credential intrinsically does not change (a user's age only increases). The primary threat vector for impersonation is a malicious actor stealing the physical device.
-**Mitigation & Future Work:** While a stolen device is naturally protected by local hardware biometrics (Fingerprint/FaceID), formal credential revocation is still a necessary mechanism. Future updates should implement a status-check endpoint or Revocation List to handle cases of lost devices, fully aligning with EUDI standards.
+- **Assumption:** An age verification credential intrinsically does not change (a user's age only increases). The primary threat vector for impersonation is a malicious actor stealing the physical device.
+- **Mitigation & Future Work:** While a stolen device is naturally protected by local hardware biometrics (Fingerprint/FaceID), formal credential revocation is still a necessary mechanism. Future updates should implement a status-check endpoint or Revocation List to handle cases of lost devices, fully aligning with EUDI standards.
