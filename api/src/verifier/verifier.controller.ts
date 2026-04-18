@@ -1,7 +1,8 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Post, Render, Body, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import * as qrcode from 'qrcode';
 import { VerifierService } from './verifier.service';
-import * as crypto from 'crypto';
+import { ProofDto } from './dto/proof.dto';
 
 @Controller('verifier')
 export class VerifierController {
@@ -15,35 +16,61 @@ export class VerifierController {
   @Get('index')
   @Render('index')
   root() {
-    return { message: 'Hello world!' };
+    return { message: 'Weryfikator eIDAS' };
   }
 
   @Get('qr')
   @Render('qr')
   async generateQrCode() {
-    const birthDate = new Date('2000-01-01T00:00:00Z'); // Example: January 1, 2000 UTC
-    const dateOfBirth = Math.floor(birthDate.getTime() / 1000).toString();
+    // Generate challenge
+    const challenge = this.verifierService.generateChallenge();
 
-    const isActiveStudent = '1';
+    console.log('Generated challenge:', challenge);
 
-    const now = new Date();
-    const dateToday = Math.floor(now.getTime() / 1000).toString();
+    // Create QR code with challenge
+    const qrCodeContent = JSON.stringify(challenge);
+    const qrCodeDataUrl = await qrcode.toDataURL(qrCodeContent);
 
-    const nonceHex = crypto.randomBytes(32).toString('hex');
-    const nonce = BigInt('0x' + nonceHex).toString();
+    return {
+      qrCodeDataUrl,
+      challenge: JSON.stringify(challenge, null, 2),
+    };
+  }
 
-    const { isValid, nonceEcho } =
-      await this.verifierService.verifyAgeAndStudentStatus(
-        dateOfBirth,
-        isActiveStudent,
-        dateToday,
-        nonce,
+  @Post('verify')
+  async verifyProof(
+    @Body() body: { proof: ProofDto; nonce: string },
+    @Res() res: Response,
+  ) {
+    console.log('Received proof verification request');
+    console.log('Nonce:', body.nonce);
+    console.log('Proof:', JSON.stringify(body.proof, null, 2));
+
+    try {
+      const isValid = await this.verifierService.verifyProof(
+        body.proof,
+        body.nonce,
       );
 
-    const qrCodeContent = JSON.stringify({ isValid, nonceEcho });
-    console.log('QR Code content:', qrCodeContent);
-
-    const qrCodeDataUrl = await qrcode.toDataURL(qrCodeContent);
-    return { qrCodeDataUrl };
+      if (isValid) {
+        console.log('✅ Proof verified successfully!');
+        return res.status(200).json({
+          success: true,
+          message: 'Verification successful',
+        });
+      } else {
+        console.log('❌ Proof verification failed');
+        return res.status(400).json({
+          success: false,
+          message: 'Verification failed',
+        });
+      }
+    } catch (error) {
+      console.error('Error during verification:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
   }
 }

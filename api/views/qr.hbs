@@ -1,43 +1,113 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>eIDAS veryfikacja</title>
+    <title>eIDAS veryfikacja - Challenge</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
         }
         .container {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             text-align: center;
+            max-width: 600px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
         }
         img {
-            margin-top: 20px;
-            border: 1px solid #ccc;
+            margin: 20px 0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
         }
-        p {
-            margin-top: 15px;
+        .instruction {
+            margin: 15px 0;
             font-size: 1.1em;
+            color: #555;
+        }
+        .challenge-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            text-align: left;
+        }
+        .challenge-details h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .challenge-details pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e8f5e9;
+            border: 1px solid #4caf50;
+        }
+        .status.waiting {
+            background-color: #fff3e0;
+            border-color: #ff9800;
+        }
+        .refresh-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .refresh-btn:hover {
+            background-color: #5568d3;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>🔐 Weryfikator eIDAS</h1>
+        <p class="subtitle">Zero-Knowledge Proof Verification</p>
+
         {{#if qrCodeDataUrl}}
-            <img src="{{qrCodeDataUrl}}" alt="QR Code">
-            <p>Zeskanuj żeby potwierdzić wiek.</p>
+            <img src="{{qrCodeDataUrl}}" alt="QR Code" width="300" height="300">
+            <p class="instruction">📱 Zeskanuj kod QR aplikacją mobilną</p>
+
+            <div class="status waiting">
+                ⏳ Oczekiwanie na weryfikację...
+            </div>
+
+            <div class="challenge-details">
+                <h3>📋 Szczegóły Challenge:</h3>
+                <pre>{{challenge}}</pre>
+            </div>
+
+            <button class="refresh-btn" onclick="location.reload()">
+                🔄 Wygeneruj nowy Challenge
+            </button>
         {{else}}
-            <p>Coś poszło nie tak.</p>
+            <p class="instruction">❌ Coś poszło nie tak podczas generowania challenge.</p>
         {{/if}}
     </div>
 </body>
