@@ -12,8 +12,9 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 2. Start the app
 
+  At the time the App supports only Android. Because of custom modules, run it as development build (not Expo Go)
    ```bash
-   npx expo start
+   npx expo run:android
    ```
 
 In the output, you'll find options to open the app in a

@@ -27,3 +27,24 @@ This document outlines the security mechanisms implemented in the ZeroAge system
 - **Minimization with SD-JWT:** For attributes that don't require ZKPs, **SD-JWT** allows the Wallet to surgically reveal only necessary claims (e.g., "Student Status: Active") while keeping all other identity data salted and hidden from the Verifier.
 - **OIA_05 / OIA_06 (Explicit Consent):** The EUDI Wallet interface forces explicit, fully informed user approval explaining precisely who requested the data and exactly which attributes will be transmitted (e.g., "The verifier will only see a proof that you are over 18") before sending any presentation.
 - **UD_01 (User Dashboard Transparency):** The Wallet strictly maintains a local log capturing the history of age verifications, giving the user a persistent overview of which services have verified their age.
+
+## 5. Future Considerations & Project Assumptions
+
+This section details the specific assumptions made for the current PoC and identifies architectural areas that will be addressed in future iterations to further enhance privacy and usability.
+
+### 5.1 Trust in Verifier Terminals
+- **Assumption:** In the current PoC scope, we assume that the merchant terminals (e.g., cash registers displaying the QR code) are legitimate and trustworthy.
+- **Future Work:** To achieve full mutual trust, future iterations should implement Verifier Attestation. This would allow the Wallet to cryptographically verify the legitimacy of the terminal before computing or sharing any proofs, protecting users from rogue or fake terminals.
+
+### 5.2 Location Privacy and Aggregated Verifier IDs
+- **Design Choice:** The system currently relies on unique terminal IDs (identifying a specific cash register) to facilitate the verification flow. The Wallet keeps this verification history strictly local.
+- **Potential Risk:** Using highly granular IDs could theoretically allow for precise location and behavioral tracking if the data were ever exposed.
+- **Future Mitigation:** We consider transitioning to Aggregated Verifier IDs. Instead of identifying a single register, a shared ID would be used for a group of registers or an entire store branch (e.g., "Store Branch #123"). This maintains the necessary context for the verification while significantly increasing user location privacy.
+
+### 5.3 Connectivity and IP Address Leakage
+- **Potential Problem:** The current verification flow requires the Wallet to scan a QR code and submit the proof via HTTPS to a backend server. This approach relies on an active internet connection (which may fail in underground stores) and exposes the user's IP address to the Verifier's server.
+- **Future Work:** To address connectivity issues and prevent IP tracking, future versions should introduce offline-capable local transport layers, specifically NFC. This would allow the smartphone to transmit the proof directly to the local terminal without requiring internet access.
+
+### 5.4 Device Theft and Credential Revocation
+- **Assumption:** An age verification credential intrinsically does not change (a user's age only increases). The primary threat vector for impersonation is a malicious actor stealing the physical device.
+- **Mitigation & Future Work:** While a stolen device is naturally protected by local hardware biometrics (Fingerprint/FaceID), formal credential revocation is still a necessary mechanism. Future updates should implement a status-check endpoint or Revocation List to handle cases of lost devices, fully aligning with EUDI standards.

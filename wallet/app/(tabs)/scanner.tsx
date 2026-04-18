@@ -3,7 +3,11 @@ import { StyleSheet, Button, TouchableOpacity, View, Text } from "react-native";
 import { useState } from "react";
 
 import { useAuth } from "@/context/AuthContext";
-import { sendProof } from "@/services/zkpService";
+import {
+  ChallengePayload,
+  sendProof,
+  validateChallengePayload,
+} from "@/services/zkpService";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -11,9 +15,11 @@ import { ThemedView } from "@/components/themed-view";
 export default function Scanner() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
-  const [scanData, setScanData] = useState("");
+  const [scanData, setScanData] = useState<ChallengePayload>(
+    {} as ChallengePayload,
+  );
 
-  const { user, biometricsCheck, getUserData } = useAuth();
+  const { getUserData } = useAuth();
 
   if (!permission) {
     return <ThemedView />;
@@ -28,11 +34,16 @@ export default function Scanner() {
     );
   }
 
-  const handleScan = ({ data }) => {
+  const handleScan = ({ data }: any) => {
     // TO DO: REMEMBER TO VERIFY SCAN DATA
     setScanned(true);
-    setScanData(data);
+    let challenge = validateChallengePayload(data);
+
     console.log("QR code:", data);
+    if (challenge) {
+      setScanData(challenge);
+      console.log("Valid challenge");
+    }
   };
 
   if (!scanned) {
@@ -45,29 +56,33 @@ export default function Scanner() {
           }}
           onBarcodeScanned={scanned ? undefined : handleScan}
         />
-
-        <Button title="test scan" onPress={() => handleScan("test")} />
       </ThemedView>
     );
   }
 
   const handleYes = async () => {
     // TO DO: REMEMBER TO VERIFY SCAN DATA
-    await sendProof(await getUserData("Send proof to 3rd party"), scanData);
+    console.log(scanData.callbackUrl);
+    let userData = await getUserData("Send proof to 3rd party");
+    if (userData) {
+      await sendProof(userData, scanData);
+    }
     setScanned(false);
-    setScanData("");
+    setScanData({} as ChallengePayload);
   };
 
   const handleNo = () => {
     setScanned(false);
-    setScanData("");
+    setScanData({} as ChallengePayload);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Would you like to verify your age with:</Text>
 
-      <Text style={styles.text}>{scanData}</Text>
+      <Text style={styles.text}>{scanData.verifierName}</Text>
+
+      <Text style={styles.text}>{scanData.callbackUrl}</Text>
 
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.yesButton} onPress={handleYes}>
