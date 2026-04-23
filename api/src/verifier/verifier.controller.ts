@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Render, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Render, Body, Res, Param } from '@nestjs/common';
 import type { Response } from 'express';
 import * as qrcode from 'qrcode';
 import { VerifierService } from './verifier.service';
@@ -17,6 +17,17 @@ export class VerifierController {
   @Render('index')
   root() {
     return { message: 'Weryfikator eIDAS' };
+  }
+
+  @Get('success')
+  @Render('success')
+  success() {
+    return {};
+  }
+
+  @Get('status/:nonce')
+  getStatus(@Param('nonce') nonce: string) {
+    return { status: this.verifierService.getVerificationStatus(nonce) };
   }
 
   @Get('qr')

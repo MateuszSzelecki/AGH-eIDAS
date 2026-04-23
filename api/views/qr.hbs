@@ -94,7 +94,7 @@
             <img src="{{qrCodeDataUrl}}" alt="QR Code" width="300" height="300">
             <p class="instruction">📱 Zeskanuj kod QR aplikacją mobilną</p>
 
-            <div class="status waiting">
+            <div class="status waiting" id="status-box">
                 ⏳ Oczekiwanie na weryfikację...
             </div>
 
@@ -106,6 +106,22 @@
             <button class="refresh-btn" onclick="location.reload()">
                 🔄 Wygeneruj nowy Challenge
             </button>
+
+            <script>
+                const nonce = JSON.parse(document.querySelector('pre').textContent).nonce;
+
+                const interval = setInterval(async () => {
+                    try {
+                        const res = await fetch('/verifier/status/' + nonce);
+                        const data = await res.json();
+
+                        if (data.status === 'verified') {
+                            clearInterval(interval);
+                            window.location.href = '/verifier/success';
+                        }
+                    } catch (_) {}
+                }, 2000);
+            </script>
         {{else}}
             <p class="instruction">❌ Coś poszło nie tak podczas generowania challenge.</p>
         {{/if}}

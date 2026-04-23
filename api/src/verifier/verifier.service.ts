@@ -11,6 +11,7 @@ import { ProofDto } from './dto/proof.dto';
 export class VerifierService {
   private verificationKeyPath: string;
   private challenges: Map<string, ChallengeDto> = new Map();
+  private verifiedNonces: Set<string> = new Set();
 
   constructor() {
     this.verificationKeyPath = path.join(
@@ -32,7 +33,7 @@ export class VerifierService {
       challengeId: crypto.randomUUID(),
       nonce,
       timestamp: Math.floor(Date.now() / 1000),
-      callbackUrl: 'http://10.0.2.2:8080/verify',
+      callbackUrl: 'http://10.0.2.2:3000/verifier/verify',
       verifierName: 'TestVerifier',
     };
 
@@ -40,6 +41,12 @@ export class VerifierService {
     this.challenges.set(nonce, challenge);
 
     return challenge;
+  }
+
+  getVerificationStatus(nonce: string): 'pending' | 'verified' | 'unknown' {
+    if (this.verifiedNonces.has(nonce)) return 'verified';
+    if (this.challenges.has(nonce)) return 'pending';
+    return 'unknown';
   }
 
   async verifyProof(proof: ProofDto, nonce: string): Promise<boolean> {
@@ -82,8 +89,10 @@ export class VerifierService {
         proof.publicSignals[1] === nonceHash;
 
       if (isValid) {
-        // Remove used challenge to prevent replay
         this.challenges.delete(nonce);
+        this.verifiedNonces.add(nonce);
+        // Clean up verified nonce after 5 minutes
+        setTimeout(() => this.verifiedNonces.delete(nonce), 5 * 60 * 1000);
       }
 
       return isValid;

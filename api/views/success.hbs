@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>eIDAS - Weryfikacja zakończona</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: #333;
+        }
+        .container {
+            background: #fff;
+            padding: 50px 40px;
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+        }
+        .checkmark {
+            font-size: 80px;
+            animation: pop 0.4s ease-out;
+        }
+        @keyframes pop {
+            0%   { transform: scale(0); }
+            80%  { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        h1 {
+            font-size: 1.8em;
+            color: #2e7d32;
+            margin: 20px 0 10px;
+        }
+        p {
+            color: #555;
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+        .new-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: #1b5e20;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: opacity 0.2s;
+        }
+        .new-btn:hover { opacity: 0.85; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="checkmark">✅</div>
+        <h1>Weryfikacja przebiegła pomyślnie!</h1>
+        <p>Tożsamość oraz spełnienie warunków zostały potwierdzone z użyciem Zero-Knowledge Proof.</p>
+        <a class="new-btn" href="/verifier/qr">Wygeneruj nowy Challenge</a>
+    </div>
+</body>
+</html>
