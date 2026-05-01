@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Clone, serde::Serialize, Debug)]
+#[derive(Clone, Serialize, Debug)]
 pub struct Challenge {
     challenge_id: Uuid,
     pub nonce: Nonce,
@@ -23,7 +24,7 @@ impl Challenge {
     }
 }
 
-#[derive(Clone, serde::Serialize, PartialEq, Eq, Hash, Debug)]
+#[derive(Clone, Serialize, Deserialize, PartialEq, Eq, Hash, Debug)]
 pub struct Nonce([u8; 16]);
 impl Nonce {
     fn new() -> Self {
@@ -34,4 +35,15 @@ impl Nonce {
 
         Self(nonce_bytes)
     }
+}
+
+#[derive(Clone, Deserialize, Debug)]
+// FIXME: The types are arbitrary for now.
+pub struct Proof {
+    protocol: (),
+    curve: (),
+    pi_a: [String; 8],
+    pi_b: [String; 8],
+    pi_c: [String; 8],
+    public_signals: [String; 8],
 }
