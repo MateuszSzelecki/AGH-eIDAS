@@ -38,12 +38,24 @@ impl Nonce {
 }
 
 #[derive(Clone, Deserialize, Debug)]
-// FIXME: The types are arbitrary for now.
 pub struct Proof {
-    protocol: (),
-    curve: (),
-    pi_a: [String; 8],
-    pi_b: [String; 8],
-    pi_c: [String; 8],
-    public_signals: [String; 8],
+    pub pi_a: [String; 3],
+    pub pi_b: [[String; 2]; 3],
+    pub pi_c: [String; 3],
+    pub public_signals: Vec<String>,
+}
+
+#[derive(Clone, Deserialize, Debug)]
+pub struct SnarkJsVerificationKey {
+    pub protocol: String,
+    pub curve: String,
+    #[serde(rename = "nPublic")]
+    pub n_public: usize,
+    pub vk_alpha_1: [String; 3],
+    pub vk_beta_2: [[String; 2]; 3],
+    pub vk_gamma_2: [[String; 2]; 3],
+    pub vk_delta_2: [[String; 2]; 3],
+    pub vk_alphabeta_12: [[[String; 2]; 3]; 2],
+    #[serde(rename = "IC")]
+    pub ic: Vec<[String; 3]>,
 }
