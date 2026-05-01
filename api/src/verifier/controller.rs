@@ -7,22 +7,12 @@ use serde::{Deserialize, Serialize};
 use crate::verifier::{
     VerifierData, VerifierError,
     model::{Nonce, Proof},
-    service::{generate_challenge, verify_proof},
+    service::{handle_generate_challenge, handle_proof_verification},
 };
 
 #[get("/challenge")]
 async fn challenge(verifier_data: Data<VerifierData>) -> Result<HttpResponse, VerifierError> {
-    log::info!("Requested a challenge");
-
-    let challenge = generate_challenge();
-
-    log::info!("Generated challenge: {challenge:?}");
-
-    verifier_data.store_challenge(&challenge)?;
-
-    log::info!("Stored challenge for verification");
-
-    Ok(HttpResponse::Ok().json(challenge))
+    handle_generate_challenge(&verifier_data).map(|challenge| HttpResponse::Ok().json(challenge))
 }
 
 #[derive(Clone, Deserialize, Debug)]
@@ -55,15 +45,13 @@ async fn verify(
 
     Json(VerificationRequest { nonce, proof }): Json<VerificationRequest>,
 ) -> Result<HttpResponse, VerifierError> {
-    log::info!("Requested a verification for {nonce:?} and {proof:?}");
-
-    if verify_proof(&verifier_data, &nonce, &proof)? {
-        log::info!("Verification successful");
-        Ok(HttpResponse::Ok().json(VerificationResponse::success()))
-    } else {
-        log::info!("Verification failed");
-        Ok(HttpResponse::BadRequest().json(VerificationResponse::failure()))
-    }
+    handle_proof_verification(&verifier_data, &nonce, &proof).map(|is_valid| {
+        if is_valid {
+            HttpResponse::Ok().json(VerificationResponse::success())
+        } else {
+            HttpResponse::BadRequest().json(VerificationResponse::failure())
+        }
+    })
 }
 
 pub fn scope() -> actix_web::Scope {
