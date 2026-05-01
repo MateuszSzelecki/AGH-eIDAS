@@ -2,11 +2,11 @@ mod controller;
 mod model;
 mod service;
 
-use std::{fmt::Display, sync::Mutex};
+use std::{collections::HashMap, fmt::Display, sync::Mutex};
 
 pub use controller::scope;
 
-use crate::verifier::model::Challenge;
+use crate::verifier::model::{Challenge, Nonce};
 
 #[derive(Debug, thiserror::Error)]
 enum VerifierError {
@@ -32,12 +32,12 @@ impl Display for VerifierError {
 }
 
 struct VerifierData {
-    challenges: Mutex<Vec<Challenge>>,
+    challenges: Mutex<HashMap<Nonce, Challenge>>,
 }
 impl VerifierData {
     fn new() -> Self {
         Self {
-            challenges: Mutex::new(Vec::new()),
+            challenges: Mutex::new(HashMap::new()),
         }
     }
 
@@ -46,7 +46,7 @@ impl VerifierData {
             .challenges
             .lock()
             .map_err(|_| VerifierError::StoreChallengeFailed)?;
-        challenges.push(challenge.clone());
+        challenges.insert(challenge.nonce.clone(), challenge.clone());
         Ok(())
     }
 }
