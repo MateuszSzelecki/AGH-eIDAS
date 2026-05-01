@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>eIDAS veryfikacja - Challenge</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 600px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        img {
+            margin: 20px 0;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+        }
+        .instruction {
+            margin: 15px 0;
+            font-size: 1.1em;
+            color: #555;
+        }
+        .challenge-details {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            text-align: left;
+        }
+        .challenge-details h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .challenge-details pre {
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e8f5e9;
+            border: 1px solid #4caf50;
+        }
+        .status.waiting {
+            background-color: #fff3e0;
+            border-color: #ff9800;
+        }
+        .refresh-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .refresh-btn:hover {
+            background-color: #5568d3;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

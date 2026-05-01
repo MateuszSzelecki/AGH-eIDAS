@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>🔐 Weryfikator eIDAS</h1>
+<p class="subtitle">Zero-Knowledge Proof Verification</p>
+
+<div id="challenge"></div>
+
+<button class="refresh-btn" hx-get="/ui/challenge" hx-target="#challenge" hx-swap="outerHTML">
+    🔄 Wygeneruj nowy Challenge
+</button>
+{% endblock %}

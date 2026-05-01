@@ -1,3 +1,4 @@
+mod ui;
 mod verifier;
 
 use actix_web::{App, HttpServer, web};
@@ -17,6 +18,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(actix_web::middleware::Logger::default())
             .service(web::scope("/api").service(verifier::scope()))
+            .service(ui::scope())
     })
     .bind(("127.0.0.1", 3000))?
     .run()
