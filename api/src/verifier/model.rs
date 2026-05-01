@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use crate::verifier::service::generate_nonce;
 
-#[derive(Default, serde::Serialize, Debug)]
+#[derive(Clone, serde::Serialize, Debug)]
 pub struct Challenge {
     challenge_id: Uuid,
     nonce: [u8; 16],
@@ -22,13 +22,5 @@ impl Challenge {
             callback_url: callback_url.to_string(),
             verifier_name: verifier_name.to_string(),
         }
-    }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum VerifierError {}
-impl actix_web::error::ResponseError for VerifierError {
-    fn error_response(&self) -> actix_web::HttpResponse {
-        actix_web::HttpResponse::InternalServerError().body("Internal Server Error")
     }
 }
