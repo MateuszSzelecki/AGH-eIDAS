@@ -57,7 +57,7 @@ async fn verify(
 ) -> Result<HttpResponse, VerifierError> {
     log::info!("Requested a verification for {nonce:?} and {proof:?}");
 
-    if verify_proof(proof, nonce) {
+    if verify_proof(&verifier_data, &nonce, &proof)? {
         log::info!("Verification successful");
         Ok(HttpResponse::Ok().json(VerificationResponse::success()))
     } else {
