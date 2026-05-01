@@ -1,10 +1,6 @@
-{
-  pkgs,
-  lib,
-  config,
-  inputs,
-  ...
-}: {
-  # https://devenv.sh/packages/
-  packages = [pkgs.nodejs pkgs.pnpm pkgs.nest-cli];
+{...}: {
+  languages.rust = {
+    enable = true;
+    components = ["rustc" "cargo" "clippy" "rustfmt"];
+  };
 }
