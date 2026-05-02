@@ -5,3 +5,7 @@
     <h3>📋 Szczegóły Challenge:</h3>
     <pre>{{ challenge }}</pre>
 </div>
+
+<div id="verification-status" hx-get="/ui/status?nonce={{ nonce }}" hx-trigger="load" hx-target="#container" hx-swap="outerhtml">
+  Waiting for verification...
+</div>

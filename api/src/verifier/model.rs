@@ -24,7 +24,7 @@ impl Challenge {
     }
 }
 
-#[derive(Clone, Serialize, Deserialize, PartialEq, Eq, Hash, Debug)]
+#[derive(Default, Copy, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, Debug)]
 pub struct Nonce([u8; 16]);
 impl Nonce {
     fn new() -> Self {

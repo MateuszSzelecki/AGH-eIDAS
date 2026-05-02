@@ -2,7 +2,11 @@ mod controller;
 mod model;
 mod service;
 
-use std::{collections::HashMap, fmt::Display, sync::Mutex};
+use std::{
+    collections::HashMap,
+    fmt::Display,
+    sync::{Arc, Mutex},
+};
 
 pub use controller::scope;
 
@@ -14,6 +18,7 @@ pub enum VerifierError {
     ChallengeNotFound,
     InvalidVerificationKey,
     VerificationFailed,
+    VerificationTimeout,
 }
 
 impl actix_web::error::ResponseError for VerifierError {
@@ -27,6 +32,9 @@ impl actix_web::error::ResponseError for VerifierError {
             }
             VerifierError::VerificationFailed => {
                 actix_web::HttpResponse::BadRequest().body("Verification failed")
+            }
+            VerifierError::VerificationTimeout => {
+                actix_web::HttpResponse::RequestTimeout().body("Verification timed out")
             }
         }
     }
@@ -47,40 +55,90 @@ impl Display for VerifierError {
             VerifierError::VerificationFailed => {
                 writeln!(f, "Verification failed!")
             }
+            VerifierError::VerificationTimeout => {
+                writeln!(f, "Verification timed out!")
+            }
         }
     }
 }
 
+enum VerificationStatus {
+    Success,
+    Failure,
+}
 pub struct VerifierData {
-    challenges: Mutex<HashMap<Nonce, Challenge>>,
+    challenges: Arc<Mutex<HashMap<Nonce, Challenge>>>,
+    status_tx: kanal::AsyncSender<(Nonce, VerificationStatus)>,
+    status_rx: kanal::AsyncReceiver<(Nonce, VerificationStatus)>,
     pub vk: SnarkJsVerificationKey,
 }
-
 impl VerifierData {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let vk_path = "../zk/artifacts/verification_key.json";
         let vk_str = std::fs::read_to_string(vk_path)
             .unwrap_or_else(|_| panic!("Failed to read verification key at {}", vk_path));
         let vk: SnarkJsVerificationKey =
             serde_json::from_str(&vk_str).expect("Failed to parse verification key");
 
+        let status_channel = kanal::unbounded_async();
         Self {
-            challenges: Mutex::new(HashMap::new()),
+            challenges: Arc::new(Mutex::new(HashMap::new())),
+            status_tx: status_channel.0,
+            status_rx: status_channel.1,
             vk,
         }
     }
 
-    pub fn store_challenge(&self, challenge: &Challenge) -> Result<(), VerifierError> {
+    fn store_challenge(&self, challenge: &Challenge) -> Result<(), VerifierError> {
         let mut challenges = self
             .challenges
             .lock()
             .map_err(|_| VerifierError::StoreChallengeFailed)?;
-        challenges.insert(challenge.nonce.clone(), challenge.clone());
+        challenges.insert(challenge.nonce, challenge.clone());
         Ok(())
     }
 
-    pub fn get_challenge(&self, nonce: &Nonce) -> Option<Challenge> {
+    fn get_challenge(&self, nonce: Nonce) -> Option<Challenge> {
         let challenges = self.challenges.lock().ok()?;
-        challenges.get(nonce).cloned()
+        challenges.get(&nonce).cloned()
+    }
+
+    async fn set_status(
+        &self,
+        nonce: Nonce,
+        status: VerificationStatus,
+    ) -> Result<(), VerifierError> {
+        // If the challenge is not in the hashmap should we abort, or notify and then abort?
+        {
+            let mut challenges = self
+                .challenges
+                .lock()
+                .map_err(|_| VerifierError::ChallengeNotFound)?;
+
+            challenges
+                .remove(&nonce)
+                .ok_or(VerifierError::ChallengeNotFound)?;
+        }
+
+        self.status_tx
+            .send((nonce, status))
+            .await
+            .map_err(|_| VerifierError::VerificationTimeout)
+    }
+
+    async fn await_status(&self, nonce: Nonce) -> Result<VerificationStatus, VerifierError> {
+        let rx = self.status_rx.clone();
+
+        loop {
+            let (rx_nonce, status) = rx
+                .recv()
+                .await
+                .map_err(|_| VerifierError::VerificationTimeout)?;
+            if rx_nonce != nonce {
+                continue;
+            }
+
+            return Ok(status);
+        }
     }
 }

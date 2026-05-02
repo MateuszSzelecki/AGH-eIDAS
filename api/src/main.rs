@@ -14,10 +14,14 @@ fn init_logging() {
 async fn main() -> std::io::Result<()> {
     init_logging();
 
-    HttpServer::new(|| {
+    let verifier_data = web::Data::new(verifier::VerifierData::new());
+
+    HttpServer::new(move || {
+        let worker_verifier_data = verifier_data.clone();
+
         App::new()
             .wrap(actix_web::middleware::Logger::default())
-            .service(web::scope("/api").service(verifier::scope()))
+            .service(web::scope("/api").service(verifier::scope().app_data(worker_verifier_data)))
             .service(ui::scope())
     })
     .bind(("127.0.0.1", 3000))?

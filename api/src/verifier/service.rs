@@ -1,12 +1,12 @@
 use actix_web::http::Uri;
-use ark_bn254::{Bn254, Fq, Fr, G1Affine, G2Affine, Fq2};
-use ark_groth16::{Groth16, VerifyingKey, Proof as ArkProof};
+use ark_bn254::{Bn254, Fq, Fq2, Fr, G1Affine, G2Affine};
+use ark_groth16::{Groth16, Proof as ArkProof, VerifyingKey};
 use ark_snark::SNARK;
 use num_bigint::BigUint;
 use std::str::FromStr;
 
 use crate::verifier::{
-    VerifierData, VerifierError,
+    VerificationStatus, VerifierData, VerifierError,
     model::{Challenge, Nonce, Proof, SnarkJsVerificationKey},
 };
 
@@ -34,10 +34,14 @@ fn parse_g1(coords: &[String; 3]) -> Result<G1Affine, VerifierError> {
 }
 
 fn parse_g2(coords: &[[String; 2]; 3]) -> Result<G2Affine, VerifierError> {
-    let x_re = Fq::from(BigUint::from_str(&coords[0][0]).map_err(|_| VerifierError::VerificationFailed)?);
-    let x_im = Fq::from(BigUint::from_str(&coords[0][1]).map_err(|_| VerifierError::VerificationFailed)?);
-    let y_re = Fq::from(BigUint::from_str(&coords[1][0]).map_err(|_| VerifierError::VerificationFailed)?);
-    let y_im = Fq::from(BigUint::from_str(&coords[1][1]).map_err(|_| VerifierError::VerificationFailed)?);
+    let x_re =
+        Fq::from(BigUint::from_str(&coords[0][0]).map_err(|_| VerifierError::VerificationFailed)?);
+    let x_im =
+        Fq::from(BigUint::from_str(&coords[0][1]).map_err(|_| VerifierError::VerificationFailed)?);
+    let y_re =
+        Fq::from(BigUint::from_str(&coords[1][0]).map_err(|_| VerifierError::VerificationFailed)?);
+    let y_im =
+        Fq::from(BigUint::from_str(&coords[1][1]).map_err(|_| VerifierError::VerificationFailed)?);
 
     let x = Fq2::new(x_re, x_im);
     let y = Fq2::new(y_re, y_im);
@@ -72,9 +76,9 @@ fn convert_proof(proof: &Proof) -> Result<ArkProof<Bn254>, VerifierError> {
     Ok(ArkProof { a, b, c })
 }
 
-pub fn handle_proof_verification(
+pub async fn handle_proof_verification(
     verifier_data: &VerifierData,
-    nonce: &Nonce,
+    nonce: Nonce,
     proof: &Proof,
 ) -> Result<bool, VerifierError> {
     log::info!("Requested a verification for {nonce:?} and {proof:?}");
@@ -90,7 +94,8 @@ pub fn handle_proof_verification(
     // 2. Convert public signals to Fr
     let mut public_inputs = Vec::new();
     for signal in &proof.public_signals {
-        let fr = Fr::from(BigUint::from_str(signal).map_err(|_| VerifierError::VerificationFailed)?);
+        let fr =
+            Fr::from(BigUint::from_str(signal).map_err(|_| VerifierError::VerificationFailed)?);
         public_inputs.push(fr);
     }
 
@@ -107,13 +112,28 @@ pub fn handle_proof_verification(
     // 4. Check business logic: isValid (first public signal) must be 1
     if public_inputs.is_empty() || public_inputs[0] != Fr::from(1u32) {
         log::info!("Circuit logic failed: isValid is not 1");
+        verifier_data
+            .set_status(nonce, VerificationStatus::Failure)
+            .await?;
         return Ok(false);
     }
 
     // TODO: Verify nonce binding (Poseidon(nonce) == public_inputs[1])
-    // For now we assume the nonce is correct if the proof is valid, 
+    // For now we assume the nonce is correct if the proof is valid,
     // but in production we MUST check the echo.
 
     log::info!("Verification successful");
+    verifier_data
+        .set_status(nonce, VerificationStatus::Success)
+        .await?;
     Ok(true)
+}
+
+pub async fn handle_verification_status(
+    verifier_data: &VerifierData,
+    nonce: Nonce,
+) -> Result<VerificationStatus, VerifierError> {
+    log::info!("Waiting for status update for {nonce:?}");
+
+    verifier_data.await_status(nonce).await
 }
