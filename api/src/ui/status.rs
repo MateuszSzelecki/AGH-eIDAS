@@ -36,6 +36,8 @@ use serde::Deserialize;
         text-decoration: none;
         border-radius: 8px;
         transition: opacity 0.2s;
+        cursor: pointer;
+        border: none;
     }
     .new-btn:hover { opacity: 0.85; }
 </style>
@@ -43,7 +45,9 @@ use serde::Deserialize;
 <div class="checkmark">✅</div>
 <h1>Weryfikacja przebiegła pomyślnie!</h1>
 <p>Tożsamość oraz spełnienie warunków zostały potwierdzone z użyciem Zero-Knowledge Proof.</p>
-<a class="new-btn" href="/ui/qr">Wygeneruj nowy Challenge</a>
+<button class="new-btn" hx-get="/ui/verification" hx-target="#container" hx-swap="innerHTML">
+    Wygeneruj nowy Challenge
+</button>
 "##
 )]
 struct SuccessTemplate;
@@ -82,6 +86,8 @@ struct SuccessTemplate;
         text-decoration: none;
         border-radius: 8px;
         transition: opacity 0.2s;
+        cursor: pointer;
+        border: none;
     }
     .new-btn:hover { opacity: 0.85; }
 </style>
@@ -89,7 +95,9 @@ struct SuccessTemplate;
 <div class="crossmark">❌</div>
 <h1>Weryfikacja nie powiodła się</h1>
 <p>Tożsamość lub warunki nie mogły zostać potwierdzone. Spróbuj ponownie lub skontaktuj się z administratorem.</p>
-<a class="new-btn" href="/ui/qr">Spróbuj ponownie</a>
+<button class="new-btn" hx-get="/ui/verification" hx-target="#container" hx-swap="innerHTML">
+    Spróbuj ponownie
+</button>
 "##
 )]
 struct FailureTemplate;

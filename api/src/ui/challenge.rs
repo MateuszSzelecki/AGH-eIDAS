@@ -5,6 +5,72 @@ use askama::Template;
 #[template(
     ext = "html",
     source = r##"
+<style>
+    .instruction {
+        margin: 15px 0;
+        font-size: 1.1em;
+        color: #555;
+    }
+    .challenge-details {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-left: 4px solid #667eea;
+        text-align: left;
+    }
+    .challenge-details h3 {
+        margin-top: 0;
+        color: #667eea;
+    }
+    .challenge-details pre {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 0.9em;
+    }
+    svg {
+        margin: 20px 0;
+        border: 2px solid #667eea;
+        border-radius: 8px;
+    }
+    .status-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 25px;
+        padding: 15px;
+        border-top: 1px solid #eee;
+        color: #667eea;
+        font-weight: 500;
+    }
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(102, 126, 234, 0.3);
+        border-radius: 50%;
+        border-top-color: #667eea;
+        animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .pulse {
+        width: 8px;
+        height: 8px;
+        background-color: #667eea;
+        border-radius: 50%;
+        box-shadow: 0 0 0 rgba(102, 126, 234, 0.4);
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(102, 126, 234, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+    }
+</style>
+
 {{ qr_code | safe }}
 <p class="instruction">📱 Zeskanuj kod QR aplikacją mobilną</p>
 
@@ -13,8 +79,15 @@ use askama::Template;
     <pre>{{ challenge }}</pre>
 </div>
 
-<div id="verification-status" hx-get="/ui/status?nonce={{ nonce }}" hx-trigger="load" hx-target="#container" hx-swap="outerhtml">
-  Waiting for verification...
+<div id="verification-status" 
+     hx-get="/ui/status?nonce={{ nonce }}" 
+     hx-trigger="load" 
+     hx-target="#container" 
+     hx-swap="innerHTML"
+     class="status-container">
+    <div class="spinner"></div>
+    <span>Oczekiwanie na weryfikację...</span>
+    <div class="pulse"></div>
 </div>
 "##
 )]

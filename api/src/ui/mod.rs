@@ -12,7 +12,7 @@ use askama::Template;
 {% extends "base.html" %}
 
 {% block content %}
-<div hx-get="/ui/verification" hx-trigger="load" hx-target="#container" hx-swap="outerhtml"></div>
+<div hx-get="/ui/verification" hx-trigger="load" hx-target="#container" hx-swap="innerHTML"></div>
 {% endblock %}
 "##
 )]
