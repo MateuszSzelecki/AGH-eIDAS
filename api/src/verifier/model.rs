@@ -1,11 +1,14 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+const EXPITY_PERIOD: chrono::TimeDelta = chrono::TimeDelta::minutes(5);
+
 #[derive(Clone, Serialize, Debug)]
 pub struct Challenge {
     challenge_id: Uuid,
     pub nonce: Nonce,
     timestamp: i64,
+    expiry: i64,
     callback_url: String,
     verifier_name: String,
 }
@@ -13,14 +16,24 @@ impl Challenge {
     pub fn new(callback_url: actix_web::http::Uri, verifier_name: &str) -> Self {
         let challenge_id = Uuid::new_v4();
         let nonce = Nonce::new();
-        let timestamp = chrono::Utc::now().timestamp() / 1000;
+        let generation_time = chrono::Utc::now();
+        let timestamp = generation_time.timestamp() / 1000;
+        let expiry = generation_time
+            .checked_add_signed(EXPITY_PERIOD)
+            .expect("Timestamp must be in range")
+            .timestamp();
         Self {
             challenge_id,
             nonce,
             timestamp,
+            expiry,
             callback_url: callback_url.to_string(),
             verifier_name: verifier_name.to_string(),
         }
+    }
+
+    pub fn is_expired(&self) -> bool {
+        chrono::Utc::now().timestamp() > self.expiry
     }
 }
 

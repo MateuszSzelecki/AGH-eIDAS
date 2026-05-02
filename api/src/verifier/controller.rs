@@ -76,9 +76,12 @@ async fn status(
 ) -> Result<HttpResponse, VerifierError> {
     handle_verification_status(&verifier_data, nonce)
         .await
-        .map(|status| match status {
-            VerificationStatus::Success => HttpResponse::Ok().body("success"),
-            VerificationStatus::Failure => HttpResponse::Ok().body("failure"),
+        .map(|status| {
+            HttpResponse::Ok().body(match status {
+                VerificationStatus::Success => "success",
+                VerificationStatus::Failure => "failure",
+                VerificationStatus::Expired => "expired",
+            })
         })
 }
 

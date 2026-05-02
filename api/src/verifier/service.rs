@@ -20,7 +20,10 @@ pub fn handle_generate_challenge(verifier_data: &VerifierData) -> Result<Challen
 
     log::info!("Generated challenge: {challenge:?}");
 
-    verifier_data.store_challenge(&challenge)?;
+    verifier_data
+        .challenges()
+        .ok_or(VerifierError::StoreChallengeFailed)?
+        .insert(challenge.nonce, challenge.clone());
 
     log::info!("Stored challenge for verification");
 
@@ -83,9 +86,15 @@ pub async fn handle_proof_verification(
 ) -> Result<bool, VerifierError> {
     log::info!("Requested a verification for {nonce:?} and {proof:?}");
 
-    let _challenge = verifier_data
-        .get_challenge(nonce)
+    let challenge = verifier_data
+        .challenges()
+        .and_then(|c| c.get(&nonce).cloned())
         .ok_or(VerifierError::ChallengeNotFound)?;
+
+    if challenge.is_expired() {
+        set_status(verifier_data, nonce, VerificationStatus::Expired).await?;
+        return Ok(false);
+    }
 
     // 1. Convert VK and Proof to Arkworks types
     let vk = convert_vk(&verifier_data.vk)?;
@@ -112,9 +121,7 @@ pub async fn handle_proof_verification(
     // 4. Check business logic: isValid (first public signal) must be 1
     if public_inputs.is_empty() || public_inputs[0] != Fr::from(1u32) {
         log::info!("Circuit logic failed: isValid is not 1");
-        verifier_data
-            .set_status(nonce, VerificationStatus::Failure)
-            .await?;
+        set_status(verifier_data, nonce, VerificationStatus::Failure).await?;
         return Ok(false);
     }
 
@@ -123,10 +130,26 @@ pub async fn handle_proof_verification(
     // but in production we MUST check the echo.
 
     log::info!("Verification successful");
-    verifier_data
-        .set_status(nonce, VerificationStatus::Success)
-        .await?;
+    set_status(verifier_data, nonce, VerificationStatus::Success).await?;
     Ok(true)
+}
+
+async fn set_status(
+    verifier_data: &VerifierData,
+    nonce: Nonce,
+    status: VerificationStatus,
+) -> Result<(), VerifierError> {
+    log::info!("Challenge status for {nonce:?} changed to {status:?}");
+
+    // If the challenge is not in the hashmap should we abort, or notify and then abort?
+    verifier_data
+        .challenges()
+        .ok_or(VerifierError::ChallengeNotFound)?
+        .remove(&nonce)
+        .ok_or(VerifierError::ChallengeNotFound)?;
+
+    let _ = verifier_data.status_tx.send((nonce, status)).await;
+    Ok(())
 }
 
 pub async fn handle_verification_status(
@@ -135,5 +158,34 @@ pub async fn handle_verification_status(
 ) -> Result<VerificationStatus, VerifierError> {
     log::info!("Waiting for status update for {nonce:?}");
 
-    verifier_data.await_status(nonce).await
+    let rx = verifier_data.status_rx.clone();
+    loop {
+        let (rx_nonce, status) = rx
+            .recv()
+            .await
+            .map_err(|_| VerifierError::VerificationTimeout)?;
+        if rx_nonce != nonce {
+            continue;
+        }
+
+        log::info!("Recieved status update for {nonce:?}");
+        return Ok(status);
+    }
+}
+
+pub async fn expire_challenges(verifier_data: &VerifierData) {
+    let nonces_to_cleanup = {
+        let Some(challenges) = verifier_data.challenges() else {
+            return;
+        };
+        challenges
+            .iter()
+            .filter(|(_, challenge)| challenge.is_expired())
+            .map(|(nonce, _)| *nonce)
+            .collect::<Vec<_>>()
+    };
+    for nonce in nonces_to_cleanup {
+        log::info!("Rmoved expired challenge for {nonce:?}");
+        let _ = set_status(verifier_data, nonce, VerificationStatus::Expired).await;
+    }
 }

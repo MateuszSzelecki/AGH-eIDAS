@@ -16,6 +16,16 @@ async fn main() -> std::io::Result<()> {
 
     let verifier_data = web::Data::new(verifier::VerifierData::new());
 
+    // Cleanup expired challenges
+    let cleanup_verifier_data = verifier_data.clone();
+    actix_web::rt::spawn(async move {
+        loop {
+            log::info!("Cleanig up expired challenges");
+            actix_web::rt::time::sleep(std::time::Duration::from_mins(1)).await;
+            verifier::expire_challenges(&cleanup_verifier_data).await;
+        }
+    });
+
     HttpServer::new(move || {
         let worker_verifier_data = verifier_data.clone();
 

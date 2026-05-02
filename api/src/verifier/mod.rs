@@ -5,10 +5,11 @@ mod service;
 use std::{
     collections::HashMap,
     fmt::Display,
-    sync::{Arc, Mutex},
+    sync::{Arc, Mutex, MutexGuard},
 };
 
 pub use controller::scope;
+pub use service::expire_challenges;
 
 use crate::verifier::model::{Challenge, Nonce, SnarkJsVerificationKey};
 
@@ -62,15 +63,17 @@ impl Display for VerifierError {
     }
 }
 
+#[derive(Debug)]
 enum VerificationStatus {
     Success,
     Failure,
+    Expired,
 }
 pub struct VerifierData {
     challenges: Arc<Mutex<HashMap<Nonce, Challenge>>>,
     status_tx: kanal::AsyncSender<(Nonce, VerificationStatus)>,
     status_rx: kanal::AsyncReceiver<(Nonce, VerificationStatus)>,
-    pub vk: SnarkJsVerificationKey,
+    vk: SnarkJsVerificationKey,
 }
 impl VerifierData {
     pub fn new() -> Self {
@@ -89,56 +92,7 @@ impl VerifierData {
         }
     }
 
-    fn store_challenge(&self, challenge: &Challenge) -> Result<(), VerifierError> {
-        let mut challenges = self
-            .challenges
-            .lock()
-            .map_err(|_| VerifierError::StoreChallengeFailed)?;
-        challenges.insert(challenge.nonce, challenge.clone());
-        Ok(())
-    }
-
-    fn get_challenge(&self, nonce: Nonce) -> Option<Challenge> {
-        let challenges = self.challenges.lock().ok()?;
-        challenges.get(&nonce).cloned()
-    }
-
-    async fn set_status(
-        &self,
-        nonce: Nonce,
-        status: VerificationStatus,
-    ) -> Result<(), VerifierError> {
-        // If the challenge is not in the hashmap should we abort, or notify and then abort?
-        {
-            let mut challenges = self
-                .challenges
-                .lock()
-                .map_err(|_| VerifierError::ChallengeNotFound)?;
-
-            challenges
-                .remove(&nonce)
-                .ok_or(VerifierError::ChallengeNotFound)?;
-        }
-
-        self.status_tx
-            .send((nonce, status))
-            .await
-            .map_err(|_| VerifierError::VerificationTimeout)
-    }
-
-    async fn await_status(&self, nonce: Nonce) -> Result<VerificationStatus, VerifierError> {
-        let rx = self.status_rx.clone();
-
-        loop {
-            let (rx_nonce, status) = rx
-                .recv()
-                .await
-                .map_err(|_| VerifierError::VerificationTimeout)?;
-            if rx_nonce != nonce {
-                continue;
-            }
-
-            return Ok(status);
-        }
+    fn challenges<'a>(&'a self) -> Option<MutexGuard<'a, HashMap<Nonce, Challenge>>> {
+        self.challenges.lock().ok()
     }
 }
