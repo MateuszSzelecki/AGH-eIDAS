@@ -13,8 +13,9 @@ use crate::verifier::{
 pub fn handle_generate_challenge(verifier_data: &VerifierData) -> Result<Challenge, VerifierError> {
     log::info!("Requested a challenge");
 
+    //Changed url for tests with android emulator
     let challenge = Challenge::new(
-        Uri::from_static("https://127.0.0.1:3000/api/verifier/verify"),
+        Uri::from_static("http://10.0.2.2:3000/api/verifier/verify"),
         "TestVerifier",
     );
 
@@ -181,7 +182,7 @@ pub async fn expire_challenges(verifier_data: &VerifierData) {
         challenges
             .iter()
             .filter(|(_, challenge)| challenge.is_expired())
-            .map(|(nonce, _)| *nonce)
+            .map(|(nonce, _)| nonce.clone())
             .collect::<Vec<_>>()
     };
     for nonce in nonces_to_cleanup {

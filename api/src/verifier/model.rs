@@ -1,9 +1,13 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer, Deserializer};
 use uuid::Uuid;
+
+use serde::de::Error as DeError;
 
 const EXPITY_PERIOD: chrono::TimeDelta = chrono::TimeDelta::minutes(5);
 
+
 #[derive(Clone, Serialize, Debug)]
+#[serde(rename_all="camelCase")]
 pub struct Challenge {
     challenge_id: Uuid,
     pub nonce: Nonce,
@@ -38,16 +42,60 @@ impl Challenge {
 }
 
 #[derive(Default, Copy, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, Debug)]
-pub struct Nonce([u8; 16]);
+pub struct Nonce(
+    #[serde(
+            serialize_with = "to_hex",
+            deserialize_with = "from_hex"
+        )]
+    [u8; 16]);
 impl Nonce {
     fn new() -> Self {
         let mut nonce_bytes = [0u8; 16];
 
+
+
         use rand::RngExt;
         rand::make_rng::<rand::rngs::StdRng>().fill(&mut nonce_bytes);
 
+
         Self(nonce_bytes)
     }
+}
+
+// Vibecoded function for testing, To be checked
+fn to_hex<S>(bytes: &[u8; 16], serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    let mut s = String::with_capacity(32);
+
+    for b in bytes {
+        use std::fmt::Write;
+        write!(&mut s, "{:02x}", b).unwrap();
+    }
+
+    serializer.serialize_str(&s)
+}
+
+fn from_hex<'de, D>(deserializer: D) -> Result<[u8; 16], D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+
+    if s.len() != 32 {
+        return Err(D::Error::custom("expected 32 hex characters"));
+    }
+
+    let mut out = [0u8; 16];
+
+    for i in 0..16 {
+        let byte_str = &s[i * 2..i * 2 + 2];
+        out[i] = u8::from_str_radix(byte_str, 16)
+            .map_err(D::Error::custom)?;
+    }
+
+    Ok(out)
 }
 
 #[derive(Clone, Deserialize, Debug)]
