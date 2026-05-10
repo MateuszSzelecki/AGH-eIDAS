@@ -132,6 +132,7 @@ dependencies = [
  "ark-crypto-primitives-macros",
  "ark-ec",
  "ark-ff",
+ "ark-r1cs-std",
  "ark-relations",
  "ark-serialize",
  "ark-snark",
@@ -143,6 +144,7 @@ dependencies = [
  "merlin",
  "rayon",
  "sha2",
+ "tracing",
 ]
 
 [[package]]
@@ -176,6 +178,19 @@ dependencies = [
  "num-traits",
  "rayon",
  "zeroize",
+]
+
+[[package]]
+name = "ark-ed-on-bn254"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "962e24e25cbdcaabe619c281a62bccc885f778b188129d6a02875c2671666219"
+dependencies = [
+ "ark-bn254",
+ "ark-ec",
+ "ark-ff",
+ "ark-r1cs-std",
+ "ark-std",
 ]
 
 [[package]]
@@ -3527,7 +3542,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
@@ -3956,7 +3971,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.59.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -5546,13 +5561,19 @@ version = "0.1.0"
 dependencies = [
  "android-native-keyring-store",
  "ark-bn254",
+ "ark-crypto-primitives",
  "ark-ec",
+ "ark-ed-on-bn254",
  "ark-ff",
  "ark-groth16",
  "ark-r1cs-std",
  "ark-relations",
+ "ark-serialize",
  "ark-snark",
  "ark-std",
+ "base64 0.22.1",
+ "blake2",
+ "digest",
  "keyring-core",
  "log",
  "num-bigint",

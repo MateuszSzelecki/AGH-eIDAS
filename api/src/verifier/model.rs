@@ -1,13 +1,12 @@
-use serde::{Deserialize, Serialize, Serializer, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use uuid::Uuid;
 
 use serde::de::Error as DeError;
 
 const EXPITY_PERIOD: chrono::TimeDelta = chrono::TimeDelta::minutes(5);
 
-
 #[derive(Clone, Serialize, Debug)]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct Challenge {
     challenge_id: Uuid,
     pub nonce: Nonce,
@@ -42,22 +41,18 @@ impl Challenge {
 }
 
 #[derive(Default, Copy, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, Debug)]
-pub struct Nonce(
-    #[serde(
-            serialize_with = "to_hex",
-            deserialize_with = "from_hex"
-        )]
-    [u8; 16]);
+pub struct Nonce(#[serde(serialize_with = "to_hex", deserialize_with = "from_hex")] [u8; 16]);
 impl Nonce {
     fn new() -> Self {
         let mut nonce_bytes = [0u8; 16];
 
-
-
         use rand::RngExt;
         rand::make_rng::<rand::rngs::StdRng>().fill(&mut nonce_bytes);
 
+        Self(nonce_bytes)
+    }
 
+    pub fn from_bytes(nonce_bytes: [u8; 16]) -> Self {
         Self(nonce_bytes)
     }
 }
@@ -91,8 +86,7 @@ where
 
     for i in 0..16 {
         let byte_str = &s[i * 2..i * 2 + 2];
-        out[i] = u8::from_str_radix(byte_str, 16)
-            .map_err(D::Error::custom)?;
+        out[i] = u8::from_str_radix(byte_str, 16).map_err(D::Error::custom)?;
     }
 
     Ok(out)
@@ -119,4 +113,34 @@ pub struct SnarkJsVerificationKey {
     pub vk_alphabeta_12: [[[String; 2]; 3]; 2],
     #[serde(rename = "IC")]
     pub ic: Vec<[String; 3]>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct PublicInputs {
+    pub generation_date: u64,
+    pub nonce: u128,
+}
+
+impl PublicInputs {
+    fn new(generation_date: u64, nonce: u128) -> Self {
+        Self {
+            generation_date,
+            nonce,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ProofPayload {
+    pub proof: String,
+    pub public_inputs: PublicInputs,
+}
+
+impl ProofPayload {
+    pub fn new(proof: String, generation_date: u64, nonce: u128) -> Self {
+        Self {
+            proof,
+            public_inputs: PublicInputs::new(generation_date, nonce),
+        }
+    }
 }

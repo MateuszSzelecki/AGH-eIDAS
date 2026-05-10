@@ -5,9 +5,13 @@ use ark_snark::SNARK;
 use num_bigint::BigUint;
 use std::str::FromStr;
 
+use ark_groth16::prepare_verifying_key;
+use ark_serialize::CanonicalDeserialize;
+use base64::{Engine as _, engine::general_purpose};
+
 use crate::verifier::{
     VerificationStatus, VerifierData, VerifierError,
-    model::{Challenge, Nonce, Proof, SnarkJsVerificationKey},
+    model::{Challenge, Nonce, Proof, ProofPayload, PublicInputs, SnarkJsVerificationKey},
 };
 
 pub fn handle_generate_challenge(verifier_data: &VerifierData) -> Result<Challenge, VerifierError> {
@@ -80,12 +84,39 @@ fn convert_proof(proof: &Proof) -> Result<ArkProof<Bn254>, VerifierError> {
     Ok(ArkProof { a, b, c })
 }
 
+// huh that is not so good, is it?
+const VK_BYTES: &[u8] = include_bytes!("../../../zk/artifacts/vk.bin");
 pub async fn handle_proof_verification(
     verifier_data: &VerifierData,
-    nonce: Nonce,
-    proof: &Proof,
+    proof: &str,
+    proof_public_inputs: PublicInputs,
 ) -> Result<bool, VerifierError> {
-    log::info!("Requested a verification for {nonce:?} and {proof:?}");
+    log::info!("Requested a verification for {proof:?}");
+
+    let vk = VerifyingKey::<Bn254>::deserialize_compressed(VK_BYTES)
+        .map_err(|_| VerifierError::VerificationFailed)?;
+    let pvk = prepare_verifying_key(&vk);
+
+    let public_inputs = vec![
+        Fr::from(proof_public_inputs.generation_date),
+        Fr::from(proof_public_inputs.nonce),
+    ];
+
+    // Decode proof
+    let proof_bytes = general_purpose::STANDARD
+        .decode(proof)
+        .map_err(|_| VerifierError::VerificationFailed)?;
+
+    let proof = ArkProof::<Bn254>::deserialize_compressed(&*proof_bytes)
+        .map_err(|_| VerifierError::VerificationFailed)?;
+
+    let verified = Groth16::<Bn254>::verify_with_processed_vk(&pvk, &public_inputs, &proof)
+        .map_err(|_| VerifierError::VerificationFailed)?;
+
+    log::info!("{:?}", verified);
+
+    let payload_bytes: [u8; 16] = proof_public_inputs.nonce.to_be_bytes();
+    let nonce = Nonce::from_bytes(payload_bytes);
 
     let challenge = verifier_data
         .challenges()
@@ -97,42 +128,7 @@ pub async fn handle_proof_verification(
         return Ok(false);
     }
 
-    // 1. Convert VK and Proof to Arkworks types
-    let vk = convert_vk(&verifier_data.vk)?;
-    let ark_proof = convert_proof(proof)?;
-
-    // 2. Convert public signals to Fr
-    let mut public_inputs = Vec::new();
-    for signal in &proof.public_signals {
-        let fr =
-            Fr::from(BigUint::from_str(signal).map_err(|_| VerifierError::VerificationFailed)?);
-        public_inputs.push(fr);
-    }
-
-    // 3. Verify the proof
-    let pvk = Groth16::<Bn254>::process_vk(&vk).map_err(|_| VerifierError::VerificationFailed)?;
-    let is_valid = Groth16::<Bn254>::verify_proof(&pvk, &ark_proof, &public_inputs)
-        .map_err(|_| VerifierError::VerificationFailed)?;
-
-    if !is_valid {
-        log::info!("Groth16 verification failed");
-        return Ok(false);
-    }
-
-    // 4. Check business logic: isValid (first public signal) must be 1
-    if public_inputs.is_empty() || public_inputs[0] != Fr::from(1u32) {
-        log::info!("Circuit logic failed: isValid is not 1");
-        set_status(verifier_data, nonce, VerificationStatus::Failure).await?;
-        return Ok(false);
-    }
-
-    // TODO: Verify nonce binding (Poseidon(nonce) == public_inputs[1])
-    // For now we assume the nonce is correct if the proof is valid,
-    // but in production we MUST check the echo.
-
-    log::info!("Verification successful");
-    set_status(verifier_data, nonce, VerificationStatus::Success).await?;
-    Ok(true)
+    Ok(verified)
 }
 
 async fn set_status(

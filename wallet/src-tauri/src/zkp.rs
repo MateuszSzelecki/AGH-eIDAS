@@ -16,8 +16,9 @@ pub struct ChallengePayload {
 }
 
 impl ChallengePayload {
-    pub fn get_nonce(&self) -> String {
-        self.nonce.clone()
+    pub fn get_nonce(&self) -> u128 {
+        let nonce_u128 = u128::from_str_radix(self.nonce.trim_start_matches("0x"), 16).unwrap();
+        nonce_u128
     }
 }
 
@@ -30,7 +31,38 @@ pub struct UserDocument {
     pub date_of_birth: u64,
     pub issue_date: u64,
     pub expiry_date: u64,
-    pub signature: String,
+    pub sig_r: String,
+    pub sig_s: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct PublicInputs {
+    generation_date: u64,
+    nonce: u128,
+}
+
+impl PublicInputs {
+    fn new(generation_date: u64, nonce: u128) -> Self {
+        Self {
+            generation_date,
+            nonce,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ProofPayload {
+    proof: String,
+    public_inputs: PublicInputs,
+}
+
+impl ProofPayload {
+    pub fn new(proof: String, generation_date: u64, nonce: u128) -> Self {
+        Self {
+            proof,
+            public_inputs: PublicInputs::new(generation_date, nonce),
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -47,10 +79,11 @@ pub fn request_document() -> UserDocument {
         identifier: "1".to_string(),
         first_name: "Test".to_string(),
         last_name: "User".to_string(),
-        date_of_birth: 1234,
+        date_of_birth: 94664820u64,
         issue_date: 1234,
-        expiry_date: 12345,
-        signature: "abcd".to_string(),
+        expiry_date: 1788328502,
+        sig_r: "".to_string(),
+        sig_s: "".to_string(),
     };
     storage::store_user_document(document.clone());
     document
@@ -67,7 +100,8 @@ pub fn load_document() -> UserDocument {
             date_of_birth: 0,
             issue_date: 0,
             expiry_date: 0,
-            signature: "".to_string(),
+            sig_r: "".to_string(),
+            sig_s: "".to_string(),
         },
     };
 
@@ -89,35 +123,28 @@ async fn inner_generate_proof(
     // Right now it automatically sends proof
     let user_document = storage::get_user_document()?;
 
+    info!("STARTING PROOF GENERATION");
     let proof = zkp_gen::generate_proof(user_document, challenge.clone())?;
-
+    info!("PROOF GENERATED SENDING");
     send_proof(proof, challenge).await?;
-
+    info!("PROOF SENT");
     Ok(())
 }
 
 async fn send_proof(
-    proof: String,
+    proof: ProofPayload,
     challenge: ChallengePayload,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // REMEMBER TO CHECK OF ON THE API SIDE IF NONCE FROM PUBLIC INPUTS IS CHECKED!!!!
     let client = Client::new();
 
-    let proof_json: Value = serde_json::from_str(&proof)?;
-
-    // Works with api rn, not sure if there is a need to send nonce seperately
-    let body = VerificationRequest {
-        nonce: challenge.nonce,
-        proof: proof_json,
-    };
-
     let res = client
         .post(&challenge.callback_url)
-        .json(&body)
+        .json(&proof)
         .send()
         .await?;
 
-    println!("Status: {}", res.status());
+    info!("Status: {:?}", res);
 
     Ok(())
 }

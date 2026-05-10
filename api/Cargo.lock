@@ -203,6 +203,7 @@ dependencies = [
  "ark-serialize",
  "ark-snark",
  "askama",
+ "base64",
  "chrono",
  "env_logger",
  "image",

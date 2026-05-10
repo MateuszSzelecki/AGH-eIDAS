@@ -2,11 +2,12 @@ use actix_web::{
     HttpResponse, get, post,
     web::{self, Data, Json, Query},
 };
+use log::info;
 use serde::{Deserialize, Serialize};
 
 use crate::verifier::{
     VerificationStatus, VerifierData, VerifierError,
-    model::{Nonce, Proof},
+    model::{Nonce, Proof, PublicInputs},
     service::{handle_generate_challenge, handle_proof_verification, handle_verification_status},
 };
 
@@ -17,8 +18,8 @@ async fn challenge(verifier_data: Data<VerifierData>) -> Result<HttpResponse, Ve
 
 #[derive(Clone, Deserialize, Debug)]
 struct VerificationRequest {
-    proof: Proof,
-    nonce: Nonce,
+    proof: String,
+    public_inputs: PublicInputs,
 }
 #[derive(Clone, Serialize, Debug)]
 struct VerificationResponse {
@@ -43,9 +44,12 @@ impl VerificationResponse {
 async fn verify(
     verifier_data: Data<VerifierData>,
 
-    Json(VerificationRequest { nonce, proof }): Json<VerificationRequest>,
+    Json(VerificationRequest {
+        proof,
+        public_inputs,
+    }): Json<VerificationRequest>,
 ) -> Result<HttpResponse, VerifierError> {
-    handle_proof_verification(&verifier_data, nonce, &proof)
+    handle_proof_verification(&verifier_data, &proof, public_inputs)
         .await
         .map(|is_valid| {
             if is_valid {
