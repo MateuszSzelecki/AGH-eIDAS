@@ -1,0 +1,28 @@
+[package]
+name = "agh-eidas-api"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+actix-web = "4.13.0"
+chrono = "0.4.44"
+env_logger = "0.11.10"
+log = "0.4.29"
+rand = "0.10.1"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.138"
+thiserror = "2.0.18"
+uuid = { version = "1.23.1", features = ["serde", "v4"] }
+ark-bn254 = "0.5.0"
+ark-groth16 = "0.5.0"
+ark-serialize = "0.5.0"
+ark-ff = "0.5.0"
+ark-ec = "0.5.0"
+ark-snark = "0.5.0"
+num-bigint = "0.4.6"
+askama = "0.16.0"
+qrcode = "0.14.1"
+image = "0.25.10"
+reqwest = { version = "0.13.3", features = ["query"] }
+kanal = "0.1.1"
+base64 = "0.22"

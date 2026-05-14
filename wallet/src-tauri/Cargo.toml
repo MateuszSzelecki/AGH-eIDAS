@@ -1,0 +1,62 @@
+[package]
+name = "wallet"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "wallet_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+ark-bn254 = "0.5.0"
+ark-std = "0.5.0"
+ark-groth16 = "0.5.0"
+ark-snark = "0.5.0"
+ark-ff = "0.5.0"
+ark-ec = "0.5.0"
+ark-relations= "0.5.0"
+ark-r1cs-std = "0.5.0"
+
+
+ark-ed-on-bn254 = { version = "0.5.0", features = ["r1cs"] }
+ark-crypto-primitives = { version = "0.5.0", default-features = false, features = ["sponge", "signature", "r1cs"] }
+blake2 = "0.10"
+digest = "0.10"
+ark-serialize = { version = "0.5.0", features = ["derive"] }
+
+
+rand = "0.8"
+num-bigint = "0.4.6"
+
+base64= "0.22"
+
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.13", features= ["json"] }
+
+log = "0.4"
+
+keyring-core = "1.0.0"
+android-native-keyring-store = "1.0.0"
+tauri-plugin-log = "2"
+
+[target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
+tauri-plugin-barcode-scanner = "2"
+tauri-plugin-biometric = "2"
+
+[profile.dev]
+opt-level=3
