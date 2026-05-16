@@ -92,55 +92,8 @@ where
     Ok(out)
 }
 
-#[derive(Clone, Deserialize, Debug)]
-pub struct Proof {
-    pub pi_a: [String; 3],
-    pub pi_b: [[String; 2]; 3],
-    pub pi_c: [String; 3],
-    pub public_signals: Vec<String>,
-}
-
-#[derive(Clone, Deserialize, Debug)]
-pub struct SnarkJsVerificationKey {
-    pub protocol: String,
-    pub curve: String,
-    #[serde(rename = "nPublic")]
-    pub n_public: usize,
-    pub vk_alpha_1: [String; 3],
-    pub vk_beta_2: [[String; 2]; 3],
-    pub vk_gamma_2: [[String; 2]; 3],
-    pub vk_delta_2: [[String; 2]; 3],
-    pub vk_alphabeta_12: [[[String; 2]; 3]; 2],
-    #[serde(rename = "IC")]
-    pub ic: Vec<[String; 3]>,
-}
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PublicInputs {
     pub generation_date: u64,
     pub nonce: u128,
-}
-
-impl PublicInputs {
-    fn new(generation_date: u64, nonce: u128) -> Self {
-        Self {
-            generation_date,
-            nonce,
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ProofPayload {
-    pub proof: String,
-    pub public_inputs: PublicInputs,
-}
-
-impl ProofPayload {
-    pub fn new(proof: String, generation_date: u64, nonce: u128) -> Self {
-        Self {
-            proof,
-            public_inputs: PublicInputs::new(generation_date, nonce),
-        }
-    }
 }

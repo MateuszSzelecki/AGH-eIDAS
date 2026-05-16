@@ -2,12 +2,11 @@ use actix_web::{
     HttpResponse, get, post,
     web::{self, Data, Json, Query},
 };
-use log::info;
 use serde::{Deserialize, Serialize};
 
 use crate::verifier::{
     VerificationStatus, VerifierData, VerifierError,
-    model::{Nonce, Proof, PublicInputs},
+    model::{Nonce, PublicInputs},
     service::{handle_generate_challenge, handle_proof_verification, handle_verification_status},
 };
 
