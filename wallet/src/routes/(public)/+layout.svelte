@@ -10,7 +10,7 @@
     $effect(() => {
         checkAuth();
         if (user.user) {
-            goto("/home", {
+            goto("/scanner/home", {
                 replaceState: true,
             });
         }

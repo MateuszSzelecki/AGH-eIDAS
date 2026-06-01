@@ -1,61 +1,94 @@
-
-<script>
-    import { login, user } from "$lib/auth.svelte";
+<script lang="ts">
+    import { login } from "$lib/auth.svelte";
+    
     let username = $state("");
     let password = $state("");
+    let showPassword = $state(false);
     let loading = $state(false);
+    let errorMsg = $state("");
 
     async function handleLogin() {
+        if (!username.trim() || !password.trim()) {
+            errorMsg = "Please enter username and password.";
+            return;
+        }
+
         loading = true;
-        const result = await login(username, password); // dodałem await na wypadek gdyby login był asynchroniczny
-        loading = false;
+        errorMsg = "";
+
+        try {
+            await login(username, password);
+        } catch (err: any) {
+            errorMsg = typeof err === "string" ? err : "Login failed.";
+        } finally {
+            loading = false;
+        }
     }
 </script>
-
 <div class="app-container">
     <div class="form-card">
-        <!-- TWOJE ELEMENTY HUD / SCI-FI -->
         <div class="top-bar"></div>
-        <div class="side-trapezoid left"></div>
-        <div class="side-trapezoid right"></div>
-        <div class="bottom-triangle left"></div>
-        <div class="bottom-triangle right"></div>
         
         <h2>eIDAS Wallet</h2>
-        <p class="subtitle">Zaloguj się do swojego portfela</p>
+        <p class="subtitle">Log in to your wallet</p>
 
         <div class="input-group">
             <div class="input-wrapper">
-                <input type="text" placeholder="Nazwa użytkownika" bind:value={username} />
+                <input type="text" placeholder="Username" bind:value={username} />
             </div>
-            <div class="input-wrapper">
-                <input type="password" placeholder="Hasło" bind:value={password} />
-            </div>
+            <div class="input-wrapper" style="position: relative;">
+    <input 
+        type={showPassword ? "text" : "password"} 
+        placeholder="Password" 
+        bind:value={password} 
+    />
+    <button 
+        type="button" 
+        class="eye-btn" 
+        onclick={() => showPassword = !showPassword}
+        aria-label={showPassword ? "Hide password" : "Show password"}
+    >
+        {#if showPassword}
+            <!-- Ikona SOLID (widoczne) -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clip-rule="evenodd" />
+            </svg>
+        {:else}
+            <!-- Ikona OUTLINE (ukryte) -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+        {/if}
+    </button>
+</div>
         </div>
 
+        {#if errorMsg}
+            <p style="color: #ff4d4d; font-size: 14px; margin-bottom: 15px; margin-top: -10px;">{errorMsg}</p>
+        {/if}
+
         <button onclick={handleLogin} disabled={loading} class="login-btn">
-            {loading ? "Weryfikacja..." : "Zaloguj się"}
+            {loading ? "Logging in..." : "Login"}
         </button>
         
         <div class="footer">
-            <p>Nie masz konta?</p>
-            <a href="/register">Utwórz nowe konto</a>
+            <p>Don't have an account?</p>
+            <a href="/register">Create one</a>
         </div>
     </div>
 </div>
 
-
 <style>
+  @font-face {
+    font-family: 'Coolvetica';
+    src: url('/fonts/coolvetica.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
 
-
-@font-face {
-  font-family: 'Coolvetica';
-  src: url('/fonts/coolvetica.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
   :global(body) {
     margin: 0;
@@ -65,22 +98,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-  
-    background: 
-      radial-gradient(circle at center, #597aa0 0%, #1b232b 100%);
+    background: radial-gradient(circle at center, #597aa0 0%, #1b232b 100%);
     background-size: cover;
     background-attachment: fixed;
+  }
 
-    /* SPECJALNIE DLA TELEFONU (ekrany węższe niż 768px) */
   @media (max-width: 768px) {
     :global(body) {
-      /* Bardziej zbity, mniejszy gradient na środku telefonu */
-      background: radial-gradient(circle at center, #597aa0 0%, #080a0c 70%);
+      background: radial-gradient(circle at center, #597aa0 0%, #1b232b 73%);
     }
-  
-
   }
-}
 
   .app-container {
     display: flex;
@@ -91,44 +118,32 @@
   }
 
   .form-card {
-    /* Twoje kolory + radialny gradient jako światło u góry */
     background: 
       radial-gradient(circle at 50% -10%, rgba(156, 213, 255, 0.2) 0%, transparent 60%),
       #0f1419;
     backdrop-filter: blur(20px);
     padding: 3.5rem 2.5rem;
     border-radius: 4px;
-    width: 100%;
-    max-width: 340px;
+    width: 340px;
     text-align: center;
     position: relative;
     border: 1px solid rgba(156, 213, 255, 0.15);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     overflow: hidden;
-
-
-    /* Ustawienia dla LAPTOPA */
-    width: 340px; 
-    min-height: auto; 
     transition: all 0.3s ease;
   }
 
-  /* SPECJALNIE DLA TELEFONU */
   @media (max-width: 768px) {
     .form-card {
-      width: 85%; /* Węższa w stosunku do ekranu */
+      width: 85%;
       max-width: 300px;
-      min-height: 55vh; /* Wyższa, żeby wyglądała smuklej */
+      min-height: 55vh;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Wyśrodkowuje zawartość wewnątrz wysokiej karty */
+      justify-content: center;
       padding: 4rem 1.5rem;
     }
-
-
   }
-
-  /* --- KSZTAŁTY HUD / SCI-FI --- */
 
   .top-bar {
     position: absolute;
@@ -139,26 +154,13 @@
     box-shadow: 0 0 12px #9CD5FF;
   }
 
-  .side-trapezoid.left {
-    left: 0; top: 15%; height: 70%; width: 4px;
-    background: rgba(156, 213, 255, 0.3);
-    /* To robi ukośne ścięcie na końcach linii */
-    clip-path: polygon(0 0, 100% 5%, 100% 95%, 0 100%);
-  }
-  .side-trapezoid.right {
-    right: 0; top: 15%; height: 70%; width: 4px;
-    background: rgba(156, 213, 255, 0.3);
-    clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 95%);
-  }
-
   h2 {
     font-family: 'Coolvetica', sans-serif;
     font-weight: 400;
     font-size: 2.4rem;
     color: #ffffff;
     margin: 0;
-    letter-spacing: 1px; /* Rozluźnione litery */
-    /* Usuwamy wszelkie cienie/triangles, które mogły tu być */
+    letter-spacing: 1px;
     position: relative;
     z-index: 2;
   }
@@ -200,7 +202,6 @@
   .login-btn {
     width: 100%;
     padding: 16px;
-    /* Gradient jak na przycisku "Confirm swap" */
     background: linear-gradient(90deg, #355872, #7AAACE);
     color: white;
     border: none;
@@ -216,6 +217,11 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(122, 170, 206, 0.3);
     filter: brightness(1.1);
+  }
+
+  .login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   .footer {
@@ -234,15 +240,28 @@
 
   a:hover { color: #ffffff; }
 
-  .spinner {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 0.8s linear infinite;
-    margin-right: 10px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .eye-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    padding: 0;
+}
+
+.eye-btn svg {
+    color: #7AAACE; 
+    width: 20px;
+    height: 20px;
+}
+
+.eye-btn:hover {
+    opacity: 1;
+}
+
 </style>

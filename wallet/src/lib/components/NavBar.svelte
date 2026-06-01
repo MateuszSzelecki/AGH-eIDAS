@@ -3,7 +3,7 @@
     import { page } from "$app/state";
 
     const items = [
-        { label: "Home", path: "/home", icon: "🏠" },
+        { label: "Home", path: "/scanner/home", icon: "🏠" },
         { label: "Scan", path: "/scanner", icon: "📷" },
         { label: "Settings", path: "/settings", icon: "⚙️" },
     ];

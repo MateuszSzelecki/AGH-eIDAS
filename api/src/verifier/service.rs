@@ -1,17 +1,13 @@
 use actix_web::http::Uri;
-use ark_bn254::{Bn254, Fq, Fq2, Fr, G1Affine, G2Affine};
-use ark_groth16::{Groth16, Proof as ArkProof, VerifyingKey};
-use ark_snark::SNARK;
-use num_bigint::BigUint;
-use std::str::FromStr;
-
-use ark_groth16::prepare_verifying_key;
+use ark_bn254::{Bn254, Fr};
+use ark_groth16::{Groth16, Proof as ArkProof, VerifyingKey, prepare_verifying_key};
 use ark_serialize::CanonicalDeserialize;
+use ark_snark::SNARK;
 use base64::{Engine as _, engine::general_purpose};
 
 use crate::verifier::{
     VerificationStatus, VerifierData, VerifierError,
-    model::{Challenge, Nonce, Proof, ProofPayload, PublicInputs, SnarkJsVerificationKey},
+    model::{Challenge, Nonce, PublicInputs},
 };
 
 pub fn handle_generate_challenge(verifier_data: &VerifierData) -> Result<Challenge, VerifierError> {
@@ -35,56 +31,6 @@ pub fn handle_generate_challenge(verifier_data: &VerifierData) -> Result<Challen
     Ok(challenge)
 }
 
-fn parse_g1(coords: &[String; 3]) -> Result<G1Affine, VerifierError> {
-    let x = Fq::from(BigUint::from_str(&coords[0]).map_err(|_| VerifierError::VerificationFailed)?);
-    let y = Fq::from(BigUint::from_str(&coords[1]).map_err(|_| VerifierError::VerificationFailed)?);
-    Ok(G1Affine::new_unchecked(x, y))
-}
-
-fn parse_g2(coords: &[[String; 2]; 3]) -> Result<G2Affine, VerifierError> {
-    let x_re =
-        Fq::from(BigUint::from_str(&coords[0][0]).map_err(|_| VerifierError::VerificationFailed)?);
-    let x_im =
-        Fq::from(BigUint::from_str(&coords[0][1]).map_err(|_| VerifierError::VerificationFailed)?);
-    let y_re =
-        Fq::from(BigUint::from_str(&coords[1][0]).map_err(|_| VerifierError::VerificationFailed)?);
-    let y_im =
-        Fq::from(BigUint::from_str(&coords[1][1]).map_err(|_| VerifierError::VerificationFailed)?);
-
-    let x = Fq2::new(x_re, x_im);
-    let y = Fq2::new(y_re, y_im);
-    Ok(G2Affine::new_unchecked(x, y))
-}
-
-fn convert_vk(vk: &SnarkJsVerificationKey) -> Result<VerifyingKey<Bn254>, VerifierError> {
-    let alpha_g1 = parse_g1(&vk.vk_alpha_1)?;
-    let beta_g2 = parse_g2(&vk.vk_beta_2)?;
-    let gamma_g2 = parse_g2(&vk.vk_gamma_2)?;
-    let delta_g2 = parse_g2(&vk.vk_delta_2)?;
-
-    let mut ic = Vec::new();
-    for point in &vk.ic {
-        ic.push(parse_g1(point)?);
-    }
-
-    Ok(VerifyingKey {
-        alpha_g1,
-        beta_g2,
-        gamma_g2,
-        delta_g2,
-        gamma_abc_g1: ic,
-    })
-}
-
-fn convert_proof(proof: &Proof) -> Result<ArkProof<Bn254>, VerifierError> {
-    let a = parse_g1(&proof.pi_a)?;
-    let b = parse_g2(&proof.pi_b)?;
-    let c = parse_g1(&proof.pi_c)?;
-
-    Ok(ArkProof { a, b, c })
-}
-
-// huh that is not so good, is it?
 const VK_BYTES: &[u8] = include_bytes!("../../../zk/artifacts/vk.bin");
 pub async fn handle_proof_verification(
     verifier_data: &VerifierData,
@@ -102,7 +48,6 @@ pub async fn handle_proof_verification(
         Fr::from(proof_public_inputs.nonce),
     ];
 
-    // Decode proof
     let proof_bytes = general_purpose::STANDARD
         .decode(proof)
         .map_err(|_| VerifierError::VerificationFailed)?;
@@ -115,8 +60,7 @@ pub async fn handle_proof_verification(
 
     log::info!("{:?}", verified);
 
-    let payload_bytes: [u8; 16] = proof_public_inputs.nonce.to_be_bytes();
-    let nonce = Nonce::from_bytes(payload_bytes);
+    let nonce = Nonce::from_bytes(proof_public_inputs.nonce.to_be_bytes());
 
     let challenge = verifier_data
         .challenges()
@@ -127,6 +71,13 @@ pub async fn handle_proof_verification(
         set_status(verifier_data, nonce, VerificationStatus::Expired).await?;
         return Ok(false);
     }
+
+    let status = if verified {
+        VerificationStatus::Success
+    } else {
+        VerificationStatus::Failure
+    };
+    set_status(verifier_data, nonce, status).await?;
 
     Ok(verified)
 }
@@ -184,5 +135,111 @@ pub async fn expire_challenges(verifier_data: &VerifierData) {
     for nonce in nonces_to_cleanup {
         log::info!("Rmoved expired challenge for {nonce:?}");
         let _ = set_status(verifier_data, nonce, VerificationStatus::Expired).await;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Captured from a real wallet-generated proof against the current zk/artifacts/vk.bin.
+    // Regenerate via the wallet if circuit, proving key, or verifying key change.
+    const VALID_PROOF_B64: &str = "AuWgWPDahC3f4nFnuynnzjjT5LEooqyiyHzcNr1BGi4qiMzL/mE7HzIYmpLPa3eZ5DfjH7c9hpQYBpisHvQuKCeTs0SC4APTMXyS7JDPL0VBg1DbAGqUOUrN37c7Z5KpP0eegU0lwqLzk1+BYqBu89CNQV3RX0XbhbCWnwo4lx4=";
+    const VALID_GENERATION_DATE: u64 = 1778743280;
+    const VALID_NONCE: u128 = 223782569634187167627945400628229207519;
+
+    fn captured_inputs() -> PublicInputs {
+        PublicInputs {
+            generation_date: VALID_GENERATION_DATE,
+            nonce: VALID_NONCE,
+        }
+    }
+
+    #[actix_web::test]
+    async fn verifies_captured_proof_against_stored_challenge() {
+        let verifier_data = VerifierData::new();
+        verifier_data.insert_test_challenge(VALID_NONCE);
+
+        let verified = handle_proof_verification(&verifier_data, VALID_PROOF_B64, captured_inputs())
+            .await
+            .expect("verification call should succeed");
+
+        assert!(verified, "captured proof should verify");
+    }
+
+    #[actix_web::test]
+    async fn rejects_proof_without_matching_challenge() {
+        let verifier_data = VerifierData::new();
+
+        let result =
+            handle_proof_verification(&verifier_data, VALID_PROOF_B64, captured_inputs()).await;
+
+        assert!(
+            matches!(result, Err(VerifierError::ChallengeNotFound)),
+            "expected ChallengeNotFound, got {result:?}",
+        );
+    }
+
+    #[actix_web::test]
+    async fn rejects_proof_with_tampered_public_inputs() {
+        let verifier_data = VerifierData::new();
+        verifier_data.insert_test_challenge(VALID_NONCE);
+
+        let mut inputs = captured_inputs();
+        inputs.generation_date = inputs.generation_date.wrapping_add(1);
+
+        let verified = handle_proof_verification(&verifier_data, VALID_PROOF_B64, inputs)
+            .await
+            .expect("verification call should succeed");
+
+        assert!(!verified, "tampered public inputs must not verify");
+    }
+
+    #[actix_web::test]
+    async fn rejects_garbage_proof_bytes() {
+        let verifier_data = VerifierData::new();
+        verifier_data.insert_test_challenge(VALID_NONCE);
+
+        let result = handle_proof_verification(&verifier_data, "!!!not-base64!!!", captured_inputs())
+            .await;
+
+        assert!(
+            matches!(result, Err(VerifierError::VerificationFailed)),
+            "expected VerificationFailed for invalid proof bytes, got {result:?}",
+        );
+    }
+
+    #[actix_web::test]
+    async fn http_verify_endpoint_accepts_captured_payload() {
+        use actix_web::{App, http::header, test, web};
+
+        let verifier_data = web::Data::new(VerifierData::new());
+        verifier_data.insert_test_challenge(VALID_NONCE);
+
+        let app = test::init_service(
+            App::new().service(crate::verifier::scope().app_data(verifier_data.clone())),
+        )
+        .await;
+
+        // Sent as raw bytes because serde_json::Number cannot represent a u128 nonce
+        // without the arbitrary_precision feature; this mirrors the literal payload
+        // the wallet POSTs to /verifier/verify.
+        let body = format!(
+            r#"{{"proof":"{}","public_inputs":{{"generation_date":{},"nonce":{}}}}}"#,
+            VALID_PROOF_B64, VALID_GENERATION_DATE, VALID_NONCE,
+        );
+
+        let req = test::TestRequest::post()
+            .uri("/verifier/verify")
+            .insert_header((header::CONTENT_TYPE, "application/json"))
+            .set_payload(body)
+            .to_request();
+
+        let resp = test::call_service(&app, req).await;
+        assert!(
+            resp.status().is_success(),
+            "expected 2xx for valid captured proof, got {}",
+            resp.status()
+        );
     }
 }

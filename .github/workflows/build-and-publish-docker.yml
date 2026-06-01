@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t agh-eidas-api:latest ./api
+        run: docker build -f api/Dockerfile -t agh-eidas-api:latest .
 
       - name: Save Docker image as tar
         run: docker save agh-eidas-api:latest -o agh-eidas-api.tar

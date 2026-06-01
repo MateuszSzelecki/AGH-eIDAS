@@ -34,7 +34,7 @@ async fn main() -> std::io::Result<()> {
             .service(web::scope("/api").service(verifier::scope().app_data(worker_verifier_data)))
             .service(ui::scope())
     })
-    .bind(("127.0.0.1", 3000))?
+    .bind(("0.0.0.0", 3000))?
     .run()
     .await
 }

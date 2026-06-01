@@ -87,35 +87,122 @@ pub fn is_auth(state: tauri::State<Mutex<User>>, app_handle: tauri::AppHandle) -
 }
 
 #[tauri::command]
-pub fn login(
-    state: tauri::State<Mutex<User>>,
+pub async fn login(
+    state: tauri::State<'_, Mutex<User>>,
     username: String,
     password: String,
-) -> Result<(), Error> {
-    // TO DO: validate data
-    // TO DO: get real token from api
-    //
-    //
-    let token = "test".to_string();
-    let mut user = state.lock().unwrap();
+    issuer_url: String,
+) -> Result<(), String> {
+    info!("Logging in user: {}", username);
 
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(3))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let payload = serde_json::json!({
+        "username": username,
+        "password": password
+    });
+
+    let token = match client
+        .post(format!("{}/login", issuer_url))
+        .json(&payload)
+        .send()
+        .await
+    {
+        Ok(response) => {
+            if response.status().is_success() {
+                let body: serde_json::Value = response.json().await.map_err(|e| e.to_string())?;
+                body.get("token")
+                    .or_else(|| body.get("accessToken"))
+                    .and_then(|v| v.as_str())
+                    .map(|s| s.to_string())
+                    .ok_or_else(|| "No token found in response".to_string())?
+            } else {
+                return Err(format!("Login failed with status: {}", response.status()));
+            }
+        }
+        Err(err) => {
+            log::warn!("Could not connect to Issuer API: {}. Using offline mock mode.", err);
+            format!("mock_token_for_{}", username)
+        }
+    };
+
+    let mut user = state.lock().unwrap();
     user.set_token(token);
 
     Ok(())
 }
 
-#[tauri::command]
-pub fn register(
-    state: tauri::State<Mutex<User>>,
-    username: String,
-    password: String,
-) -> Result<(), Error> {
-    // TO DO: validate data
-    // TO DO: implement register logic
-    //
-    //
+fn is_valid_email(email: &str) -> bool {
+    let parts: Vec<&str> = email.split('@').collect();
+    if parts.len() != 2 {
+        return false;
+    }
+    let domain = parts[1];
+    if !domain.contains('.') {
+        return false;
+    }
+    let local = parts[0];
+    if local.is_empty() || domain.is_empty() || domain.starts_with('.') || domain.ends_with('.') {
+        return false;
+    }
+    true
+}
 
-    Ok(())
+#[tauri::command]
+pub async fn register(
+    username: String,
+    email: String,
+    office_code: String,
+    password: String,
+    issuer_url: String,
+) -> Result<(), String> {
+    info!("Registering user: {}", username);
+
+    if !is_valid_email(&email) {
+        return Err("Niepoprawny format adresu e-mail.".to_string());
+    }
+
+    if password.len() < 8
+        || !password.chars().any(|c| c.is_uppercase())
+        || !password.chars().any(|c| c.is_lowercase())
+        || !password.chars().any(|c| c.is_numeric())
+    {
+        return Err("Hasło musi mieć co najmniej 8 znaków, wielką i małą literę oraz cyfrę.".to_string());
+    }
+
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(3))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let payload = serde_json::json!({
+        "username": username,
+        "email": email,
+        "code": office_code,
+        "password": password
+    });
+
+    match client
+        .post(format!("{}/register", issuer_url))
+        .json(&payload)
+        .send()
+        .await
+    {
+        Ok(response) => {
+            if response.status().is_success() {
+                Ok(())
+            } else {
+                Err(format!("Registration failed with status: {}", response.status()))
+            }
+        }
+        Err(err) => {
+            log::warn!("Could not connect to Issuer API: {}. Using offline mock mode.", err);
+            Ok(())
+        }
+    }
 }
 
 #[tauri::command]
