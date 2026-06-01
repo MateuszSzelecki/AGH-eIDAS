@@ -1,14 +1,25 @@
-<script>
-    import { login, user } from "$lib/auth.svelte";
+<script lang="ts">
+    import { login } from "$lib/auth.svelte";
+    
     let username = $state("");
     let password = $state("");
-
     let loading = $state(false);
+    let errorMsg = $state("");
 
     async function handleLogin() {
+        if (!username.trim() || !password.trim()) {
+            errorMsg = "Wpisz nazwę użytkownika i hasło.";
+            return;
+        }
         loading = true;
-        const result = login(username, password);
-        loading = false;
+        errorMsg = "";
+        try {
+            await login(username, password);
+        } catch (err: any) {
+            errorMsg = typeof err === "string" ? err : "Błąd logowania.";
+        } finally {
+            loading = false;
+        }
     }
 </script>
 
@@ -16,8 +27,11 @@
     <h2>Login</h2>
 
     <input type="text" placeholder="Username" bind:value={username} />
-
     <input type="password" placeholder="Password" bind:value={password} />
+
+    {#if errorMsg}
+        <p style="color: red; font-size: 14px; margin: 0;">{errorMsg}</p>
+    {/if}
 
     <button onclick={handleLogin} disabled={loading}>
         {loading ? "Logging in..." : "Login"}

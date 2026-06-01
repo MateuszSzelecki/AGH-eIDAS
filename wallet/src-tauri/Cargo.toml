@@ -44,6 +44,7 @@ rand = "0.8"
 num-bigint = "0.4.6"
 
 base64= "0.22"
+uuid = { version = "1", features = ["v4", "serde"] }
 
 tokio = { version = "1", features = ["full"] }
 reqwest = { version = "0.13", features= ["json"] }
