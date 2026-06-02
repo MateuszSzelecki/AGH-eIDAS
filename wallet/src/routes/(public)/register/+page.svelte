@@ -11,32 +11,32 @@
     
     async function handleRegister() {
         if (!username.trim() || !email.trim() || !officeCode.trim() || !password.trim() || !confirmPassword.trim()) {
-            errorMsg = "Wypełnij wszystkie pola.";
+            errorMsg = "Please fill in all fields.";
             return;
         }
         if (password !== confirmPassword) {
-            errorMsg = "Hasła muszą być identyczne.";
+            errorMsg = "Passwords must match.";
             return;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email.trim())) {
-            errorMsg = "Wprowadź poprawny adres e-mail.";
+            errorMsg = "Please enter a valid email address.";
             return;
         }
         if (password.length < 8) {
-            errorMsg = "Hasło musi mieć co najmniej 8 znaków.";
+            errorMsg = "Password must be at least 8 characters long.";
             return;
         }
         if (!/[A-Z]/.test(password)) {
-            errorMsg = "Hasło musi zawierać przynajmniej jedną wielką literę.";
+            errorMsg = "Password must contain at least one uppercase letter.";
             return;
         }
         if (!/[a-z]/.test(password)) {
-            errorMsg = "Hasło musi zawierać przynajmniej jedną małą literę.";
+            errorMsg = "Password must contain at least one lowercase letter.";
             return;
         }
         if (!/[0-9]/.test(password)) {
-            errorMsg = "Hasło musi zawierać przynajmniej jedną cyfrę.";
+            errorMsg = "Password must contain at least one digit.";
             return;
         }
 
@@ -45,7 +45,7 @@
         try {
             await register(username, email, officeCode, password);
         } catch (err: any) {
-            errorMsg = typeof err === "string" ? err : "Błąd rejestracji.";
+            errorMsg = typeof err === "string" ? err : "Registration error.";
         } finally {
             loading = false;
         }

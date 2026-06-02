@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGH eIDAS - Admin Portal</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at top right, #1e293b, #0f172a 60%);
+        }
+
+        .container {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 10px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .result-box.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .result-box.error .code-display {
+            color: var(--error-color);
+            font-size: 1rem;
+            letter-spacing: normal;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            font-size: 0.875rem;
+            color: var(--success-color);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .result-box.error .result-title {
+            color: var(--error-color);
+        }
+
+        .code-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-main);
+            font-family: monospace;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .copy-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Admin Portal</h1>
+        <p class="subtitle">Generate an activation code for a citizen.</p>
+
+        <form id="generateForm">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" required placeholder="e.g. John">
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" required placeholder="e.g. Doe">
+            </div>
+
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth</label>
+                <input type="date" id="dateOfBirth" required>
+            </div>
+
+            <button type="submit" id="submitBtn">Generate Activation Code</button>
+        </form>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-title" id="resultTitle">Success!</div>
+            <div class="code-display" id="codeDisplay" onclick="copyCode()" title="Click to copy">------</div>
+            <div class="copy-hint" id="copyHint">Click the code to copy to clipboard</div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('generateForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultBox = document.getElementById('resultBox');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const resultTitle = document.getElementById('resultTitle');
+        const copyHint = document.getElementById('copyHint');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Generating...";
+            resultBox.style.display = 'none';
+            resultBox.classList.remove('error');
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const dateStr = document.getElementById('dateOfBirth').value;
+
+            // Convert YYYY-MM-DD to UNIX timestamp
+            const dateOfBirth = Math.floor(new Date(dateStr).getTime() / 1000);
+
+            try {
+                const response = await fetch('/generate-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, dateOfBirth })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult(data.code, false);
+                } else {
+                    const err = await response.text();
+                    showResult(err || "Failed to generate code.", true);
+                }
+            } catch (err) {
+                showResult("Network error. Could not reach server.", true);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Generate Activation Code";
+            }
+        });
+
+        function showResult(message, isError) {
+            resultBox.style.display = 'block';
+            if (isError) {
+                resultBox.classList.add('error');
+                resultTitle.textContent = "Error";
+                codeDisplay.textContent = message;
+                copyHint.style.display = 'none';
+            } else {
+                resultTitle.textContent = "Success! Activation Code:";
+                codeDisplay.textContent = message;
+                copyHint.style.display = 'block';
+                copyHint.textContent = "Click the code to copy to clipboard";
+            }
+        }
+
+        function copyCode() {
+            if (resultBox.classList.contains('error')) return;
+            const text = codeDisplay.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                copyHint.textContent = "Copied to clipboard! ✓";
+                setTimeout(() => {
+                    copyHint.textContent = "Click the code to copy to clipboard";
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

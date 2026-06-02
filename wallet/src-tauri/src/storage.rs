@@ -67,8 +67,8 @@ pub fn store_token(token: &str) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn delete_token() -> Result<(), Box<dyn std::error::Error>> {
-    delete_keystore(TOKEN_KEYSTORE_NAME)?;
-    delete_keystore(TOKEN_EXISTENCE)?;
+    let _ = delete_keystore(TOKEN_KEYSTORE_NAME);
+    let _ = delete_keystore(TOKEN_EXISTENCE);
     Ok(())
 }
 
@@ -110,5 +110,10 @@ pub fn store_user_document(document: UserDocument) -> Result<(), Box<dyn std::er
         }
     }
 
+    Ok(())
+}
+
+pub fn delete_user_document() -> Result<(), Box<dyn std::error::Error>> {
+    let _ = delete_keystore(ID_KEYSTORE_NAME);
     Ok(())
 }

@@ -8,7 +8,7 @@
 
     async function handleLogin() {
         if (!username.trim() || !password.trim()) {
-            errorMsg = "Wpisz nazwę użytkownika i hasło.";
+            errorMsg = "Please enter username and password.";
             return;
         }
         loading = true;
@@ -16,7 +16,7 @@
         try {
             await login(username, password);
         } catch (err: any) {
-            errorMsg = typeof err === "string" ? err : "Błąd logowania.";
+            errorMsg = typeof err === "string" ? err : "Login error.";
         } finally {
             loading = false;
         }

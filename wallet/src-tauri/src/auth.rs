@@ -55,6 +55,12 @@ impl User {
         "".to_string()
     }
 
+    /// Returns the in-memory token value without triggering biometric checks.
+    /// Used by request_document to pass the Authorization header to the Issuer API.
+    pub fn get_token_value(&self) -> String {
+        self.token.clone()
+    }
+
     fn biometric_check(&self, app_handle: tauri::AppHandle) -> Result<(), Error> {
         //TO DO: check if biometric is avaible
         let options = AuthOptions {
@@ -124,8 +130,7 @@ pub async fn login(
             }
         }
         Err(err) => {
-            log::warn!("Could not connect to Issuer API: {}. Using offline mock mode.", err);
-            format!("mock_token_for_{}", username)
+            return Err(format!("Could not connect to Issuer API: {}", err));
         }
     };
 
@@ -162,7 +167,7 @@ pub async fn register(
     info!("Registering user: {}", username);
 
     if !is_valid_email(&email) {
-        return Err("Niepoprawny format adresu e-mail.".to_string());
+        return Err("Invalid email address format.".to_string());
     }
 
     if password.len() < 8
@@ -170,7 +175,7 @@ pub async fn register(
         || !password.chars().any(|c| c.is_lowercase())
         || !password.chars().any(|c| c.is_numeric())
     {
-        return Err("Hasło musi mieć co najmniej 8 znaków, wielką i małą literę oraz cyfrę.".to_string());
+        return Err("Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, and a number.".to_string());
     }
 
     let client = reqwest::Client::builder()
@@ -199,8 +204,7 @@ pub async fn register(
             }
         }
         Err(err) => {
-            log::warn!("Could not connect to Issuer API: {}. Using offline mock mode.", err);
-            Ok(())
+            Err(format!("Could not connect to Issuer API: {}", err))
         }
     }
 }
@@ -211,5 +215,6 @@ pub fn logout(state: tauri::State<Mutex<User>>) -> Result<(), Error> {
     let mut user = state.lock().unwrap();
     user.set_token(String::new());
     storage::delete_token();
+    let _ = storage::delete_user_document();
     Ok(())
 }

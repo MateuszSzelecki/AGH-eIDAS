@@ -1,0 +1,25 @@
+[package]
+name = "agh-eidas-issuer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.13.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["serde", "v4"] }
+bcrypt = "0.15"
+rusqlite = { version = "0.32", features = ["bundled"] }
+rand = "0.8"
+base64 = "0.22"
+log = "0.4"
+env_logger = "0.11"
+
+# Cryptography dependencies matching the wallet and circuits
+ark-bn254 = "0.5.0"
+ark-std = "0.5.0"
+ark-ff = "0.5.0"
+ark-ec = "0.5.0"
+ark-serialize = { version = "0.5.0", features = ["derive"] }
+ark-ed-on-bn254 = { version = "0.5.0", features = ["r1cs"] }
+ark-crypto-primitives = { version = "0.5.0", default-features = false, features = ["sponge", "signature", "r1cs"] }

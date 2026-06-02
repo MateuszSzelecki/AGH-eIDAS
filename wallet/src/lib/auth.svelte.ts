@@ -6,7 +6,12 @@ export let user = $state({
 
 export function getIssuerUrl() {
   let hostname = "localhost";
-  if (typeof window !== "undefined" && window.location.hostname) {
+  
+  // @ts-ignore
+  if (typeof __TAURI_DEV_HOST__ !== "undefined" && __TAURI_DEV_HOST__ !== "localhost") {
+    // @ts-ignore
+    hostname = __TAURI_DEV_HOST__;
+  } else if (typeof window !== "undefined" && window.location.hostname) {
     const hn = window.location.hostname;
     // In production builds, Tauri assets are served from tauri.localhost
     if (hn !== "tauri.localhost") {
