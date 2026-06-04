@@ -18,7 +18,7 @@
             return;
         }
         if (password !== confirmPassword) {
-            errorMsg = "Passwords do not match.";
+            errorMsg = "Passwords must match.";
             return;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,7 +48,7 @@
         try {
             await register(username, email, officeCode, password);
         } catch (err: any) {
-            errorMsg = typeof err === "string" ? err : "Registration failed.";
+            errorMsg = typeof err === "string" ? err : "Registration error.";
         } finally {
             loading = false;
         }

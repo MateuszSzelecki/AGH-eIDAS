@@ -5,16 +5,21 @@
 
     let { children } = $props();
 
-    let checking = true;
+    let checking = $state(true);
+
+    import { onMount } from 'svelte';
+
+    onMount(async () => {
+        await checkAuth();
+        checking = false;
+    });
 
     $effect(() => {
-        checkAuth();
-        if (user.user) {
+        if (!checking && user.user) {
             goto("/scanner/home", {
                 replaceState: true,
             });
         }
-        checking = false;
     });
 </script>
 

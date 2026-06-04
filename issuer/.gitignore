@@ -1,0 +1,4 @@
+/target/
+/assets/issuer_sk.bin
+/issuer.db
+/issuer.db-journal

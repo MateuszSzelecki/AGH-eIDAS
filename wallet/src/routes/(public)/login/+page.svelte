@@ -19,7 +19,7 @@
         try {
             await login(username, password);
         } catch (err: any) {
-            errorMsg = typeof err === "string" ? err : "Login failed.";
+            errorMsg = typeof err === "string" ? err : "Login error.";
         } finally {
             loading = false;
         }
