@@ -8,7 +8,6 @@
 
     import { navigating } from "$app/state";
     import { invoke } from "@tauri-apps/api/core";
-    import NavBar from "$lib/components/NavBar.svelte";
 
     interface ChallengePayload {
         challengeId: string;
@@ -18,9 +17,9 @@
         verifierName: string;
     }
 
-    let permission = $state("granted");
+    let permission = $state("prompt");
 
-    let scanning = $state(true);
+    let scanning = $state(false);
 
     let result: ChallengePayload = $state({
         challengeId: "",
@@ -290,7 +289,7 @@
         </div>
     {/if}
 </div>
-<NavBar />
+
 <style>
     .scanner-container {
         height: 100vh; 
@@ -323,43 +322,6 @@
         font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
         color: #9CD5FF; background: rgba(156, 213, 255, 0.1);
         padding: 4px 12px; border-radius: 20px; margin-bottom: 1.5rem; display: inline-block;
-    }
-
-    .details-box {
-        background: rgba(255, 255, 255, 0.05);
-        padding: 20px;
-        border-radius: 12px;
-        margin: 25px 0;
-        text-align: left;
-        border: 1px solid rgba(156, 213, 255, 0.1); 
-    }
-
-    .item {
-        margin-bottom: 15px;
-    }
-
-    .item:last-child {
-        margin-bottom: 0;
-    }
-
-    .item span { 
-    color: #616c75; 
-    font-size: 11px; 
-    text-transform: uppercase; 
-    letter-spacing: 1px;
-    display: block; 
-    margin-bottom: 2px;
-    }
-
-    .item strong { 
-    color: #ffffff; 
-    font-size: 16px; 
-    }
-
-    .item small { 
-    color: #9CD5FF; 
-    font-size: 13px; 
-    opacity: 0.9;
     }
 
     .action-btn {
@@ -473,7 +435,7 @@
         z-index: 10;
     }
 
-    
+
     @media (hover: hover) {
         .action-btn:hover {
             transform: translateY(-2px); 

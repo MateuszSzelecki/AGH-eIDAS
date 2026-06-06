@@ -2,7 +2,6 @@
     import { goto } from "$app/navigation";
     import { page } from "$app/state";
 
-    // Używamy gotowych ścieżek SVG zamiast emoji
     const items = [
         { 
             label: "Home", 
@@ -21,15 +20,12 @@
         },
     ];
 
-    // Aktualnie otwarta strona (żeby wiedzieć, co podświetlić, gdy myszka ucieknie)
     let activeIndex = $derived(
         Math.max(0, items.findIndex(item => page.url.pathname === item.path))
     );
 
-    // Indeks elementu, na który najeżdża myszka (null, jeśli myszka nie jest nad navbarem)
     let hoveredIndex = $state<number | null>(null);
 
-    // Obliczamy, gdzie ma być podświetlenie (hover priorytetem, inaczej active)
     let currentIndex = $derived(hoveredIndex !== null ? hoveredIndex : activeIndex);
 
     function navigate(path: string) {
@@ -38,15 +34,13 @@
 </script>
 
 <div class="nav-container">
-    <!-- onmouseleave na całym navbare resetuje hover -->
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  
     <nav class="navbar" onmouseleave={() => hoveredIndex = null}>
         <ul>
             <div class="active-pill" style="transform: translateX(calc({currentIndex} * 100%));"></div>
             
             {#each items as item, i}
-                <!-- onmouseenter na konkretnym <li> zmienia pozycję podświetlenia -->
-                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+               
                 <li onmouseenter={() => hoveredIndex = i}>
                     <button
                         class:active={activeIndex === i}
@@ -105,7 +99,6 @@
         background: rgba(156, 213, 255, 0.15);
         box-shadow: 0 0 20px rgba(156, 213, 255, 0.3), inset 0 0 8px rgba(156, 213, 255, 0.2);
         border-radius: 40px;
-        /* To odpowiada za płynne przesunięcie! */
         transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 0;
     }
@@ -121,7 +114,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px; /* Odstęp między ikoną a tekstem */
+        gap: 8px; 
         box-sizing: border-box;
         width: 100%;
         color: #758a9a; 
@@ -148,7 +141,7 @@
     }
     
     button:hover .nav-icon {
-        transform: scale(1.1); /* Lekkie powiększenie ikony na hover */
+        transform: scale(1.1); 
     }
     
     button.active {
