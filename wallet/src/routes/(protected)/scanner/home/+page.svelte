@@ -50,7 +50,13 @@
         codeError = "";
         
         try {
-            document = await invoke("request_document", { code: activationCode });
+            const issuerUrl = getIssuerUrl(); 
+            
+            document = await invoke("request_document", { 
+                issuerUrl: issuerUrl, 
+                code: activationCode 
+            });
+            
             activationCode = ""; 
         } catch (error) {
             codeError = "Failed to claim document. Please check your code.";
@@ -59,7 +65,6 @@
             loading = false;
         }
     }
-
     function formatDate(timestamp: number) {
         if (!timestamp) return "-";
         return new Date(timestamp * 1000).toLocaleDateString();
@@ -168,7 +173,8 @@
     </div>
 </div>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
   @font-face {
     font-family: 'Coolvetica';
