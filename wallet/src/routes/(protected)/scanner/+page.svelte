@@ -8,6 +8,7 @@
 
     import { navigating } from "$app/state";
     import { invoke } from "@tauri-apps/api/core";
+    import NavBar from "$lib/components/NavBar.svelte";
 
     interface ChallengePayload {
         challengeId: string;
@@ -17,16 +18,16 @@
         verifierName: string;
     }
 
-    let permission = $state("prompt");
+    let permission = $state("granted");
 
-    let scanning = $state(false);
+    let scanning = $state(true);
 
     let result: ChallengePayload = $state({
         challengeId: "",
         nonce: "",
         timestamp: -1,
-        callbackUrl: "", 
-        verifierName: "",  
+        callbackUrl: "",
+        verifierName: "",
     });
 
     let success = $state(false);
@@ -158,7 +159,7 @@
         <div class="glass-card">
             <div class="top-bar"></div>
             <div class="status-badge">System Access</div>
-            <h3>Camera Required</h3>
+            <h2 style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.8rem; margin-top: 0; margin-bottom: 10px; letter-spacing: 0.5px;">Camera Required</h2>
             <p>Please grant camera permissions to scan verification codes.</p>
             <button class="action-btn" onclick={requestCameraPermissions}>Request Permissions</button>
         </div>
@@ -180,15 +181,32 @@
     {:else if result.callbackUrl}
         <div class="glass-card">
             <div class="top-bar"></div>
-            <div class="status-badge">Request Detected</div>
-            <h2 style="font-family: 'Coolvetica', sans-serif; font-weight: 500;">Verify Identity?</h2>
-            <div class="details-box">
-                <div class="item"><span>Verifier:</span> <strong>{result.verifierName}</strong></div>
-                <div class="item"><span>Endpoint:</span> <small>{result.callbackUrl}</small></div>
+            <div class="status-badge">Private Request</div>
+            
+            <h2 style="font-family: 'Inter', sans-serif; font-weight: 500; font-size: 2rem; margin-top: 0; margin-bottom: 8px; letter-spacing: 1px;">Verify Age?</h2>
+            <p style="color: #7AAACE; font-size: 14px; margin-bottom: 24px;"><strong>{result.verifierName}</strong> is asking for your age proof.</p>
+
+            <div class="zkp-container">
+                <div class="zkp-row share">
+                    <span class="zkp-icon">✓</span>
+                    <div class="zkp-info">
+                        <span class="label">Shared Data</span>
+                        <span class="data">Legal Age (+18)</span>
+                    </div>
+                </div>
+                
+                <div class="zkp-row hide">
+                    <span class="zkp-icon">✕</span>
+                    <div class="zkp-info">
+                        <span class="label">Hidden Data</span>
+                        <span class="data">Full Name, Birthday, ID Number</span>
+                    </div>
+                </div>
             </div>
-            <div class="button-group">
-                <button class="action-btn" onclick={handleYes}>Yes, Generate Proof</button>
-                <button class="text-btn" onclick={handleNo}>No, Decline</button>
+
+            <div class="button-group" style="margin-top: 25px; display: flex; flex-direction: column; gap: 10px;">
+                <button class="action-btn" onclick={handleYes}>Generate ZK Proof</button>
+                <button class="text-btn" onclick={handleNo} style="color: #ff6b6b; opacity: 0.8; font-size: 14px; background: none; border: none; cursor: pointer;">Decline Request</button>
             </div>
         </div>
     
@@ -272,7 +290,7 @@
         </div>
     {/if}
 </div>
-
+<NavBar />
 <style>
     .scanner-container {
         height: 100vh; 
@@ -368,12 +386,19 @@
     }
 
     .cancel-btn {
-        position: absolute; bottom: 40px;
-        background: rgba(255,255,255,0.1);
-        color: white; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer;
+        position: absolute; 
+        bottom: 120px; 
+        background: rgba(86, 75, 75, 0.15);
+        color: white; 
+        border: 1px solid rgba(255,255,255,0.3); 
+        padding: 12px 30px; 
+        border-radius: 30px; 
+        cursor: pointer;
+        z-index: 200; 
+        font-weight: 500;
     }
 
-    /* SCANNER OVERLAY */
+    
     .scan-overlay {
         position: fixed; 
         inset: 0; 
@@ -448,7 +473,7 @@
         z-index: 10;
     }
 
-    /*  DLA LAPTOPA */
+    
     @media (hover: hover) {
         .action-btn:hover {
             transform: translateY(-2px); 
@@ -461,7 +486,7 @@
         }
     }
 
-    /* LA TELEFONU */
+    
     @media (pointer: coarse) {
         .action-btn:active {
             transform: scale(0.95); 
@@ -482,4 +507,26 @@
         align-items: center;
         margin-top: 10px;
     }
+    
+    .zkp-container {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        border: 1px solid rgba(156, 213, 255, 0.1);
+        overflow: hidden;
+        text-align: left;
+    }
+    .zkp-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 16px;
+    }
+    .zkp-row.share { border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .zkp-icon { font-weight: bold; font-size: 18px; }
+    .share .zkp-icon { color: #4ade80; }
+    .hide .zkp-icon { color: #ff4d4d; }
+    .zkp-info { display: flex; flex-direction: column; }
+    .zkp-info .label { font-size: 10px; text-transform: uppercase; color: #758a9a; letter-spacing: 1px; }
+    .zkp-info .data { font-size: 14px; color: white; }
+    .hide .data { color: #5c6a75; text-decoration: line-through; }
     </style>
