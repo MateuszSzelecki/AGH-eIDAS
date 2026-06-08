@@ -48,3 +48,7 @@ This section details the specific assumptions made for the current PoC and ident
 ### 5.4 Device Theft and Credential Revocation
 - **Assumption:** An age verification credential intrinsically does not change (a user's age only increases). The primary threat vector for impersonation is a malicious actor stealing the physical device.
 - **Mitigation & Future Work:** While a stolen device is naturally protected by local hardware biometrics (Fingerprint/FaceID), formal credential revocation is still a necessary mechanism. Future updates should implement a status-check endpoint or Revocation List to handle cases of lost devices, fully aligning with EUDI standards.
+
+### 5.5 Automated Identity Onboarding (e.g., Passport NFC)
+Current State: Credentials in the PoC are handled systematically.
+Future Work: To align with real-world EUDI Wallet implementations, future iterations will include automated onboarding by scanning the MRZ (Machine Readable Zone) and NFC chip of a biometric passport. This would allow users to independently and securely self-issue their verified age credential directly to the wallet without manual intervention.
