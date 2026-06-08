@@ -13,7 +13,7 @@ Our application, **ZeroAge**, serves as a functional Proof of Concept (PoC) of t
 Currently, to buy age-restricted goods (like alcohol) in a physical store or to access 18+ online content, users are forced to show their entire ID card or even provide a digital scan of it. Consequently, the verifier (a cashier or a website administrator) gains access to a vast amount of sensitive personal data: the exact date of birth, PESEL (national identification number), address, and parents' names. This creates a massive privacy risk, exposes users to identity theft, and fundamentally violates the GDPR (RODO) principle of data minimization.
 
 **Our Solution (The ZeroAge System):**
-Our system completely reverses this dynamic. By utilizing Zero-Knowledge Proofs (ZKP) within our mobile wallet, users can prove the *fact* that they are over 18 years old without sharing any underlying data. The verifier only receives a cryptographic "YES" or "NO" confirmation. This protects user privacy while allowing businesses to fully comply with age-restriction laws.
+Our system conceptually aligns with the eIDAS 2.0 Selective Disclosure requirements. By utilizing cryptographic proofs generated locally on the device (using Rust and Schnorr signatures), users can prove the fact that they are over 18 years old without sharing any underlying data. The verifier only receives a cryptographic confirmation. This protects user privacy and demonstrates the core mechanism of the EUDI Wallet without relying on complex, full-scale SD-JWT or mDOC infrastructure.
 
 <img src="images/before-and-after-u.png" width="100%" alt="Comparison: The Old Way vs The ZeroAge Way">
 
@@ -21,17 +21,19 @@ Our system completely reverses this dynamic. By utilizing Zero-Knowledge Proofs 
 
 Our project implements the foundational principles of the eIDAS 2.0 framework:
 
-*   **Selective Disclosure:** This is the most crucial innovation of the EUDI Wallet. It means that the user has full control and shares *only* the data that is absolutely necessary for a given transaction. In the ZeroAge system, instead of sharing an exact "Date of Birth," the wallet selectively discloses only a boolean attribute: `age > 18` (and optionally student status).
+*   **Selective Disclosure:** This is the most crucial innovation of the EUDI Wallet. It means that the user has full control and shares *only* the data that is absolutely necessary for a given transaction. In the ZeroAge system, instead of sharing an exact "Date of Birth," the wallet selectively discloses only a boolean attribute: `age > 18`.
 *   **Anti-tracking & Privacy by Design:** Verifiers (shops or websites) do not receive any unique, permanent identifiers. Thanks to the use of temporary, one-time QR codes and cryptographic tokens, it is impossible for businesses to track the user's activity, link different transactions together, or build behavioral profiles.
 
 ## 4. User Stories (Core Use Cases)
+
+PoC Architecture Note: For the purpose of this demonstration, both the User Wallet and the Verifier Panel (Shop) are integrated into a single application with different views. In a real-world production environment, these would be two completely separate systems (e.g., a mobile app for the user and a self-checkout kiosk/admin panel for the verifier).
 
 To demonstrate the practical application of the ZeroAge system within the EUDI framework, we have defined the following core User Stories from the perspective of the main actors in the ecosystem:
 
 ![ZeroAge: How It Works](images/how-it-works-updated.png)
 
 
-**A. The User (e.g., Citizen / Student)**
+**A. The User (e.g., Citizen)**
 *   **As a user**, I want to securely store an age credential in my mobile wallet, **so that** I do not have to carry my physical ID card with me to prove my age.
 *   **As a user**, I want to scan a store terminal's QR code to provide a zero-knowledge proof that I am over 18, **so that** I can protect my exact date of birth, name, and address from being exposed to strangers in a store or to online platforms.
 
