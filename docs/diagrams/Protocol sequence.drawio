@@ -1,0 +1,225 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.6 Chrome/140.0.7339.249 Electron/38.8.0 Safari/537.36" version="29.3.6">
+  <diagram name="Strona-1" id="i0LAV2jevUUGUN2ud2oG">
+    <mxGraphModel dx="1042" dy="626" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-1" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;verticalAlign=bottom;labelPosition=center;verticalLabelPosition=top;align=center;size=65;" value=" User" vertex="1">
+          <mxGeometry height="1740" width="35" x="20" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-2" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" value="Wallet&#xa;(Tauri + SvelteKit)" vertex="1">
+          <mxGeometry height="1740" width="150" x="360" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-3" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" value="Verifier UI&#xa;(HTMX)" vertex="1">
+          <mxGeometry height="1740" width="150" x="800" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-4" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" value="Verifier API&#xa;(Actix-web)" vertex="1">
+          <mxGeometry height="1740" width="150" x="1240" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-5" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-4" value="GET /api/verifier/challenge">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1222" y="176" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-6" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-4" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-3" value="Challenge JSON {challengeId, nonce, timestamp, expiry, callbackUrl, verifierName}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1225" y="228" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-7" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Render QR code from Challenge JSON">
+          <mxGeometry relative="1" x="-0.0242" y="98" as="geometry">
+            <mxPoint y="-1" as="offset" />
+            <Array as="points">
+              <mxPoint x="941.6800000000001" y="274" />
+              <mxPoint x="941.6800000000001" y="304" />
+            </Array>
+            <mxPoint x="874.0035294117649" y="273.9999999999998" as="sourcePoint" />
+            <mxPoint x="874.0035294117649" y="303.9999999999998" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-8" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-4" value="GET /api/verifier/status?nonce=X">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1222" y="411" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-9" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-1" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-2" value="Opens Scanner tab, taps &quot;Start Scan&quot;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="330" y="512" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-11" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-2" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-3" value="Scans QR code (camera → JSON parse)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="728" y="646" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-13" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-2" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-1" value="Shows verifier name + callback URL, asks confirmation">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="333" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-14" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-1" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-2" value="Confirms &quot;Yes&quot;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="330" y="832" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-17" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-2" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-4" value="POST /api/verifier/verify&#xa;{proof (base64), public_inputs: {generation_date, nonce}}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1050" y="1137" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-23" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-4" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-2" value="200 OK {success: true, message: &quot;Verification successful&quot;}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1053" y="1599" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-24" edge="1" parent="1" source="TZhMO6v0EYGmtHhn0A9z-4" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" target="TZhMO6v0EYGmtHhn0A9z-3" value="Status update arrives via long-poll channel">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1225" y="1651" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-26" parent="1" style="fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;" value="Verifier Terminal displays QR code" vertex="1">
+          <mxGeometry height="34" width="460" x="865" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-27" parent="1" style="fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;" value="QR code displayed on screen (5 min TTL)" vertex="1">
+          <mxGeometry height="34" width="253" x="748.5" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-28" parent="1" style="fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;" value="Long-poll via kanal async channel (blocks until proof arrives or expires)" vertex="1">
+          <mxGeometry height="34" width="460" x="865" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-29" parent="1" style="fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;" value="Private: birthdate, issue_date, expiry_date, sig_r, sig_s&#xa;Public: generation_date (now), nonce" vertex="1">
+          <mxGeometry height="68" width="348" x="261" y="1022" as="geometry" />
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-34" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Camera opens (Tauri barcode-scanner plugin)">
+          <mxGeometry relative="1" x="-0.0605" y="106" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="503.67647058823513" y="560.0000000000002" />
+              <mxPoint x="503.67647058823513" y="590.0000000000002" />
+            </Array>
+            <mxPoint x="436" y="560" as="sourcePoint" />
+            <mxPoint x="436" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-35" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Validates ChallengePayload (nonce format, timestamp, URL)">
+          <mxGeometry relative="1" x="-0.0605" y="148" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="501.67647058823513" y="700.0000000000002" />
+              <mxPoint x="501.67647058823513" y="730.0000000000002" />
+            </Array>
+            <mxPoint x="434" y="700" as="sourcePoint" />
+            <mxPoint x="434" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-36" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Loads UserDocument from Android Keystore">
+          <mxGeometry relative="1" x="-0.0242" y="117" as="geometry">
+            <mxPoint y="-1" as="offset" />
+            <Array as="points">
+              <mxPoint x="502.67647058823513" y="880.0000000000002" />
+              <mxPoint x="502.67647058823513" y="910.0000000000002" />
+            </Array>
+            <mxPoint x="435" y="880" as="sourcePoint" />
+            <mxPoint x="435" y="910" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-37" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Generates Groth16 proof (AgeVerifier circuit)">
+          <mxGeometry relative="1" x="0.0242" y="118" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="501.67647058823513" y="948.0000000000002" />
+              <mxPoint x="501.67647058823513" y="978.0000000000002" />
+            </Array>
+            <mxPoint x="434" y="948" as="sourcePoint" />
+            <mxPoint x="434" y="978" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-39" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Check nonce matches stored challenge">
+          <mxGeometry relative="1" x="-0.0605" y="107" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1382.6764705882351" y="1350.0000000000002" />
+              <mxPoint x="1382.6764705882351" y="1380.0000000000002" />
+            </Array>
+            <mxPoint x="1315" y="1350" as="sourcePoint" />
+            <mxPoint x="1315" y="1380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-40" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Groth16::verify(pvk, [generation_date, nonce], proof)">
+          <mxGeometry relative="1" x="-0.0242" y="137" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1382.6764705882351" y="1267.0000000000002" />
+              <mxPoint x="1382.6764705882351" y="1297.0000000000002" />
+            </Array>
+            <mxPoint x="1315" y="1267" as="sourcePoint" />
+            <mxPoint x="1315" y="1297" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-41" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Deserialize VK from embedded vk.bin">
+          <mxGeometry relative="1" x="-0.0484" y="98" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1381.6764705882351" y="1179.0000000000002" />
+              <mxPoint x="1381.6764705882351" y="1209.0000000000002" />
+            </Array>
+            <mxPoint x="1314" y="1179" as="sourcePoint" />
+            <mxPoint x="1314" y="1209" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-42" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Check challenge not expired (5 min TTL)">
+          <mxGeometry relative="1" x="0.0121" y="106" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1383.996470588235" y="1434.0000000000002" />
+              <mxPoint x="1383.996470588235" y="1464.0000000000002" />
+            </Array>
+            <mxPoint x="1316.32" y="1434" as="sourcePoint" />
+            <mxPoint x="1316.32" y="1464" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-43" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Send status via kanal channel + remove challenge">
+          <mxGeometry relative="1" x="-0.0605" y="136" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1383.6764705882351" y="1520.0000000000002" />
+              <mxPoint x="1383.6764705882351" y="1550.0000000000002" />
+            </Array>
+            <mxPoint x="1316" y="1520" as="sourcePoint" />
+            <mxPoint x="1316" y="1550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TZhMO6v0EYGmtHhn0A9z-45" edge="1" parent="1" style="curved=1;endArrow=block;rounded=0;" value="Render &quot;Weryfikacja przebiegła pomyślnie!&quot; or failure">
+          <mxGeometry relative="1" x="-0.0605" y="136" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="943.676470588235" y="1699.0000000000002" />
+              <mxPoint x="943.676470588235" y="1729.0000000000002" />
+            </Array>
+            <mxPoint x="875.9999999999999" y="1699" as="sourcePoint" />
+            <mxPoint x="875.9999999999999" y="1729" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

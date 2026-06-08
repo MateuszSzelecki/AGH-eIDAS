@@ -1,0 +1,111 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.6 Chrome/140.0.7339.249 Electron/38.8.0 Safari/537.36" version="29.3.6">
+  <diagram name="Strona-1" id="Qc-PgucKOD4RFV5kz1ur">
+    <mxGraphModel dx="1489" dy="3230" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="szzQS0DLu0GhvK411Juu-1" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=#f0a30a;fontColor=#000000;strokeColor=#BD7000;" value="" vertex="1">
+          <mxGeometry height="170" width="650" x="373" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-2" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" value="" vertex="1">
+          <mxGeometry height="551" width="723" x="1043" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-3" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=13;fillColor=#6d8764;fontColor=#ffffff;strokeColor=#3A5431;" value="Verification Service" vertex="1">
+          <mxGeometry height="282" width="256" x="555" y="413" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-4" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=#0050ef;fontColor=#ffffff;strokeColor=#001DBC;" value="" vertex="1">
+          <mxGeometry height="349" width="333" x="20" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-52" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fillColor=#1ba1e2;strokeColor=light-dark(#006EAF, #ffffff);startArrow=none;startFill=0;startSize=6;strokeWidth=2;" target="szzQS0DLu0GhvK411Juu-10" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;1. Issues signed credential&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-5" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="🏛️ Issuer API&#xa;Rust · Actix-web" vertex="1">
+          <mxGeometry height="78" width="178" x="62" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-6" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;" value="SQLite&#xa;issuer.db" vertex="1">
+          <mxGeometry height="92" width="79" x="80" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-7" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Verifier API&#xa;Rust · Actix-web" vertex="1">
+          <mxGeometry height="78" width="178" x="590" y="438" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Verifier UI&#xa;HTMX · Askama" vertex="1">
+          <mxGeometry height="78" width="170" x="594.5" y="591" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-34" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#1ba1e2;strokeColor=#FFFFFF;strokeWidth=2;" target="szzQS0DLu0GhvK411Juu-8" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;2. Scans QR code&lt;/font&gt;">
+          <mxGeometry relative="1" x="-0.8075" as="geometry">
+            <mxPoint y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Wallet Frontend&#xa;SvelteKit 5" vertex="1">
+          <mxGeometry height="78" width="202" x="1529" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-37" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;endArrow=none;endFill=0;" target="szzQS0DLu0GhvK411Juu-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-47" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#1ba1e2;strokeColor=#FFFFFF;strokeWidth=2;" target="szzQS0DLu0GhvK411Juu-7" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;3. Sends ZK proof&lt;/font&gt;">
+          <mxGeometry relative="1" x="-0.4379" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="970" y="393" />
+              <mxPoint x="970" y="477" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Wallet Backend&#xa;Rust · Tauri 2" vertex="1">
+          <mxGeometry height="78" width="197" x="1332" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-11" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="ZK Engine&#xa;arkworks · Groth16" vertex="1">
+          <mxGeometry height="78" width="199" x="1230" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-12" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="Android Keystore" vertex="1">
+          <mxGeometry height="47" width="208" x="1400" y="453.5" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-55" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;endArrow=none;endFill=0;" target="szzQS0DLu0GhvK411Juu-11" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Goth16 proof generation&lt;/font&gt;">
+          <mxGeometry relative="1" x="-0.0755" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-13" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="pk.bin&#xa;Proving Key" vertex="1">
+          <mxGeometry height="74" width="144" x="613.25" y="47" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-54" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;" target="szzQS0DLu0GhvK411Juu-7" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;ZK proof validation&lt;/font&gt;">
+          <mxGeometry relative="1" x="-0.35" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-14" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="vk.bin&#xa;Verifying Key" vertex="1">
+          <mxGeometry height="74" width="155" x="410" y="47" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-15" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="issuer_pk.bin&#xa;Issuer Public Key" vertex="1">
+          <mxGeometry height="74" width="181" x="811" y="47" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-29" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.145;entryY=0;entryDx=0;entryDy=2.9;entryPerimeter=0;startArrow=classic;startFill=1;" target="szzQS0DLu0GhvK411Juu-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="106" y="173" />
+              <mxPoint x="92" y="173" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-31" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Issuer Service&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="118.5" x="127.25" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-32" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;ZK Module&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="118.5" x="638.75" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;Mobile Wallet&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="118.5" x="1371.75" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-45" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.383;entryY=0.007;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="szzQS0DLu0GhvK411Juu-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-56" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.852;entryY=0.004;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="szzQS0DLu0GhvK411Juu-11" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;Issuer signature verification in circuit&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="szzQS0DLu0GhvK411Juu-57" edge="1" parent="1" source="szzQS0DLu0GhvK411Juu-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.368;entryY=-0.015;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;" target="szzQS0DLu0GhvK411Juu-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
