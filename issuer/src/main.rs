@@ -42,7 +42,7 @@ async fn main() -> std::io::Result<()> {
     let sk_data = web::Data::new(sk_bytes);
 
     // 4. Start HTTP Server
-    log::info!("Listening on 0.0.0.0:8000");
+    log::info!("Listening on 127.0.0.1:8000");
     HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
@@ -54,7 +54,7 @@ async fn main() -> std::io::Result<()> {
             .service(auth::login)
             .service(document::get_document)
     })
-    .bind(("0.0.0.0", 8000))?
+    .bind(("127.0.0.1", 8000))?
     .run()
     .await
 }
