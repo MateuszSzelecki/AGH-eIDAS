@@ -36,7 +36,9 @@
 {#if checking}
     <div>Loading...</div>
 {:else if user.user}
-    {@render children()}
+    <div style="padding-bottom: 100px; min-height: 100vh;">
+        {@render children()}
+    </div>
     <NavBar />
 {:else}
     <p>Go back to login</p>
