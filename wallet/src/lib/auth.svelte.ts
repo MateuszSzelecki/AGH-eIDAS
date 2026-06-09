@@ -5,7 +5,7 @@ export let user = $state({
 });
 
 export function getIssuerUrl() {
-  let hostname = "localhost";
+  let hostname = "10.0.2.2";
   
   // @ts-ignore
   if (typeof __TAURI_DEV_HOST__ !== "undefined" && __TAURI_DEV_HOST__ !== "localhost") {
