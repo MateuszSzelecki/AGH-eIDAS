@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.6 Chrome/140.0.7339.249 Electron/38.8.0 Safari/537.36" version="29.3.6">
   <diagram name="Strona-1" id="Rup7oteGhEtduSUuRQVk">
-    <mxGraphModel dx="1426" dy="841" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+    <mxGraphModel dx="1042" dy="626" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -20,25 +20,45 @@
           <mxGeometry height="570" width="229" x="10" y="360" as="geometry" />
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-61" edge="1" parent="1" source="bkM_AW9fa9ghQMn9kAJA-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fillColor=#f0a30a;strokeColor=#BD7000;" target="bkM_AW9fa9ghQMn9kAJA-17">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="447" />
+              <mxPoint x="260" y="789" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="birthdate&#xa;Unix timestamp" vertex="1">
           <mxGeometry height="78" width="176" x="35" y="388" as="geometry" />
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-58" edge="1" parent="1" source="bkM_AW9fa9ghQMn9kAJA-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#6a00ff;strokeColor=#3700CC;" target="bkM_AW9fa9ghQMn9kAJA-18">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="524" />
+              <mxPoint x="250" y="552" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-7" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="issue_date&#xa;Unix timestamp" vertex="1">
           <mxGeometry height="78" width="176" x="35" y="485" as="geometry" />
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-59" edge="1" parent="1" source="bkM_AW9fa9ghQMn9kAJA-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#008a00;strokeColor=#005700;" target="bkM_AW9fa9ghQMn9kAJA-19">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="623" />
+              <mxPoint x="250" y="651" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="expiry_date&#xa;Unix timestamp" vertex="1">
           <mxGeometry height="78" width="176" x="35" y="584" as="geometry" />
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-53" edge="1" parent="1" source="bkM_AW9fa9ghQMn9kAJA-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fillColor=#1ba1e2;strokeColor=#006EAF;" target="bkM_AW9fa9ghQMn9kAJA-20">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="769" />
+              <mxPoint x="250" y="916" />
+            </Array>
+          </mxGeometry>
         </mxCell>
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;" value="sig_r&#xa;BJJ Affine Point" vertex="1">
           <mxGeometry height="78" width="176" x="35" y="730" as="geometry" />
@@ -121,8 +141,8 @@
         <mxCell id="bkM_AW9fa9ghQMn9kAJA-52" edge="1" parent="1" source="bkM_AW9fa9ghQMn9kAJA-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.009;entryY=0.589;entryDx=0;entryDy=0;entryPerimeter=0;fillColor=#1ba1e2;strokeColor=#006EAF;" target="bkM_AW9fa9ghQMn9kAJA-20">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="250" y="868" />
-              <mxPoint x="250" y="924" />
+              <mxPoint x="240" y="868" />
+              <mxPoint x="240" y="924" />
             </Array>
           </mxGeometry>
         </mxCell>
